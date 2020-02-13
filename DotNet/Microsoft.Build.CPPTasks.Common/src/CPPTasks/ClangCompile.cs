@@ -150,7 +150,7 @@
             return str;
         }
 
-        protected override void RemoveTaskSpecificInputs(CanonicalTrackedInputFiles compactInputs)
+        protected override void RemoveTaskSpecificInputs(Utilities.Extension.CanonicalTrackedInputFiles compactInputs)
         {
             if ((!base.IsPropertySet("PrecompiledHeader") || (this.PrecompiledHeader == "Create")) && base.IsPropertySet("ObjectFileName"))
             {

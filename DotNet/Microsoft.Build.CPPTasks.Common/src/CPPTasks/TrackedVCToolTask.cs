@@ -4,6 +4,10 @@
     using Microsoft.Build.Shared;
     using Microsoft.Build.Utilities;
     using Microsoft.Build.Utilities.Extension;
+    using CanonicalTrackedInputFiles = Microsoft.Build.Utilities.Extension.CanonicalTrackedInputFiles;
+    using CanonicalTrackedOutputFiles = Microsoft.Build.Utilities.Extension.CanonicalTrackedOutputFiles;
+    using ExecutableType = Microsoft.Build.Utilities.Extension.ExecutableType;
+    using FileTracker = Microsoft.Build.Utilities.Extension.FileTracker;
     using Microsoft.Win32.SafeHandles;
     using System;
     using System.Collections.Generic;
