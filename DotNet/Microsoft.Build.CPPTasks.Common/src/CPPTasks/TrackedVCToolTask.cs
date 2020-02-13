@@ -704,7 +704,6 @@
         {
             string dllName = null;
             string path = null;
-            int num;
             bool trackFileAccess = this.TrackFileAccess;
             string filePath = Environment.ExpandEnvironmentVariables(pathToTool);
             string str6 = responseFileCommands;
@@ -714,12 +713,8 @@
                 string trackerPath;
                 ExecutableType sameAsCurrentProcess;
                 this.pathToLog = filePath;
-                if (!trackFileAccess)
-                {
-                    trackerPath = filePath;
-                    goto TR_0017;
-                }
-                else
+                
+                if(trackFileAccess)
                 {
                     bool flag2;
                     sameAsCurrentProcess = ExecutableType.SameAsCurrentProcess;
@@ -740,6 +735,7 @@
                     {
                         sameAsCurrentProcess = flag2 ? ExecutableType.Native64Bit : ExecutableType.Native32Bit;
                     }
+
                     try
                     {
                         trackerPath = FileTracker.GetTrackerPath(sameAsCurrentProcess, this.TrackerSdkPath);
@@ -759,72 +755,54 @@
                         base.Log.LogErrorWithCodeFromResources("General.InvalidValue", messageArgs);
                         return -1;
                     }
-                }
-                goto TR_0019;
-            TR_0017:
-                if (string.IsNullOrEmpty(trackerPath))
-                {
-                    num = -1;
+
+                    try
+                    {
+                        dllName = FileTracker.GetFileTrackerPath(sameAsCurrentProcess, this.TrackerFrameworkPath);
+                    }
+                    catch (Exception exception3)
+                    {
+                        if (Microsoft.Build.Shared.ExceptionHandling.NotExpectedException(exception3))
+                        {
+                            throw;
+                        }
+                        object[] messageArgs = new object[] { "TrackerFrameworkPath", base.GetType().Name };
+                        base.Log.LogErrorWithCodeFromResources("General.InvalidValue", messageArgs);
+                        return -1;
+                    }
                 }
                 else
                 {
+                    trackerPath = filePath;
+                }
+
+                if (string.IsNullOrEmpty(trackerPath))
+                {
+                    return -1;
+                }
+
+                {
                     string str;
                     Microsoft.Build.Shared.ErrorUtilities.VerifyThrowInternalRooted(trackerPath);
-                    if (!trackFileAccess)
-                    {
-                        str = arguments;
-                    }
-                    else
+                    if (trackFileAccess)
                     {
                         string str8 = FileTracker.TrackerArguments(filePath, arguments, dllName, this.TrackerIntermediateDirectory, this.RootSource, base.CancelEventName);
                         base.Log.LogMessageFromResources(MessageImportance.Low, "Native_TrackingCommandMessage", new object[0]);
-                        string[] textArray1 = new string[6];
-                        textArray1[0] = trackerPath;
-                        textArray1[1] = this.AttributeFileTracking ? " /a " : " ";
-                        string[] local4 = textArray1;
-                        string[] local5 = textArray1;
-                        local5[2] = this.TrackReplaceFile ? "/f " : "";
-                        string[] local1 = local5;
-                        local1[3] = str8;
-                        local1[4] = " ";
-                        local1[5] = str6;
-                        string message = string.Concat(local1);
-                        base.Log.LogMessage(MessageImportance.Low, message, new object[0]);
+                        base.Log.LogMessage(MessageImportance.Low, trackerPath + (this.AttributeFileTracking ? " /a " : " ") + (this.TrackReplaceFile ? "/f " : "") + str8 + " " + str6, new object[0]);
                         path = Microsoft.Build.Shared.FileUtilities.GetTemporaryFile();
                         using (StreamWriter writer = new StreamWriter(path, false, Encoding.Unicode))
                         {
                             writer.Write(FileTracker.TrackerResponseFileArguments(dllName, this.TrackerIntermediateDirectory, this.RootSource, base.CancelEventName));
                         }
-                        string[] textArray2 = new string[5];
-                        string[] textArray3 = new string[5];
-                        textArray3[0] = this.AttributeFileTracking ? "/a @\"" : "@\"";
-                        string[] local2 = textArray3;
-                        local2[1] = path;
-                        local2[2] = "\"";
-                        local2[3] = this.TrackReplaceFile ? " /f " : "";
-                        string[] local3 = local2;
-                        local3[4] = FileTracker.TrackerCommandArguments(filePath, arguments);
-                        str = string.Concat(local3);
+                        str = (this.AttributeFileTracking ? "/a @\"" : "@\"") + path + "\"" + (this.TrackReplaceFile ? " /f " : "") + FileTracker.TrackerCommandArguments(filePath, arguments);
                     }
-                    num = base.ExecuteTool(trackerPath, str6, str);
-                }
-                return num;
-            TR_0019:
-                try
-                {
-                    dllName = FileTracker.GetFileTrackerPath(sameAsCurrentProcess, this.TrackerFrameworkPath);
-                }
-                catch (Exception exception3)
-                {
-                    if (Microsoft.Build.Shared.ExceptionHandling.NotExpectedException(exception3))
+                    else
                     {
-                        throw;
+                        str = arguments;
                     }
-                    object[] messageArgs = new object[] { "TrackerFrameworkPath", base.GetType().Name };
-                    base.Log.LogErrorWithCodeFromResources("General.InvalidValue", messageArgs);
-                    return -1;
-                }
-                goto TR_0017;
+
+                    return base.ExecuteTool(trackerPath, str6, str);
+                }           
             }
             finally
             {
@@ -833,7 +811,6 @@
                     base.DeleteTempFile(path);
                 }
             }
-            return num;
         }
 
         protected void WriteSourcesToCommandLinesTable(IDictionary<string, string> sourcesToCommandLines)
