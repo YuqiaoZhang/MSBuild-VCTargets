@@ -2,6 +2,7 @@
 {
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
+    using Microsoft.Build.Utilities.Extension;
     using System.Collections;
     using System.IO;
     using System.Reflection;

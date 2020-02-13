@@ -93,7 +93,7 @@ namespace Microsoft.Build.Utilities
                 normalizedFiles.Add(normalizedFile);
             }
 
-            string normalizedRootingMarker = FileTracker.FormatRootingMarker(normalizedFiles.ToArray());
+            string normalizedRootingMarker = Extension.FileTracker.FormatRootingMarker(normalizedFiles.ToArray());
             return normalizedRootingMarker;
         }
 

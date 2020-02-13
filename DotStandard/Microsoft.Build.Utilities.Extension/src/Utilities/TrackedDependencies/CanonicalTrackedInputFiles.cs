@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Shared;
 
-namespace Microsoft.Build.Utilities
+namespace Microsoft.Build.Utilities.Extension
 {
     /// <summary>
     /// This class is the filetracking log interpreter for .read. tracking logs in canonical form
@@ -148,7 +148,7 @@ namespace Microsoft.Build.Utilities
             }
 
             _tlogFiles = TrackedDependencies.ExpandWildcards(tlogFiles);
-            _tlogAvailable = Extension.TrackedDependencies.ItemsExist(_tlogFiles);
+            _tlogAvailable = TrackedDependencies.ItemsExist(_tlogFiles);
             _sourceFiles = sourceFiles;
             _outputs = outputs;
             _outputFiles = outputFiles;

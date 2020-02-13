@@ -86,7 +86,7 @@ namespace Microsoft.Build.Utilities
                     // If the file does not exist
                     if (lastWriteTime == DateTime.MinValue)
                     {
-                        FileTracker.LogMessageFromResources(log, MessageImportance.Low, "Tracking_OutputDoesNotExist", item.ItemSpec);
+                        Extension.FileTracker.LogMessageFromResources(log, MessageImportance.Low, "Tracking_OutputDoesNotExist", item.ItemSpec);
                         allExist = false;
                         break;
                     }

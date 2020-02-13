@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Microsoft.Build.Utilities.Extension": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\dotnet\\dotnet.exe",
+      "commandLineArgs": "build C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\VCProjectDefaults\\PTSystem_PosixAndroid.vcxproj  -property:VCTargetsPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\VCProjectDefaults\\MSBuild\\VCTargets\\ -property:Configuration=Debug -property:Platform=x64"
+    }
+  }
+}

@@ -13,7 +13,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Shared;
 using Microsoft.Build.Shared.FileSystem;
 
-namespace Microsoft.Build.Utilities
+namespace Microsoft.Build.Utilities.Extension
 {
     /// <summary>
     /// Enumeration to express the type of executable being wrapped by Tracker.exe

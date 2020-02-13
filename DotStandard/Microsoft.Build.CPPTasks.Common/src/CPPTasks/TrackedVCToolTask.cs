@@ -3,6 +3,7 @@
     using Microsoft.Build.Framework;
     using Microsoft.Build.Shared;
     using Microsoft.Build.Utilities;
+    using Microsoft.Build.Utilities.Extension;
     using Microsoft.Win32.SafeHandles;
     using System;
     using System.Collections.Generic;
@@ -162,7 +163,7 @@
             {
                 return 0;
             }
-            ITaskItem[] itemArray = TrackedDependencies.ExpandWildcards(filesToDelete);
+            ITaskItem[] itemArray = Utilities.Extension.TrackedDependencies.ExpandWildcards(filesToDelete);
             if (itemArray.Length == 0)
             {
                 return 0;
@@ -204,7 +205,7 @@
             {
                 return 0;
             }
-            ITaskItem[] itemArray = TrackedDependencies.ExpandWildcards(filesToDelete);
+            ITaskItem[] itemArray = Utilities.Extension.TrackedDependencies.ExpandWildcards(filesToDelete);
             if (itemArray.Length == 0)
             {
                 return 0;
