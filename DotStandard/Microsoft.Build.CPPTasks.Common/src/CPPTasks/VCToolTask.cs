@@ -33,14 +33,13 @@ namespace Microsoft.Build.CPPTasks
         protected VCToolTask.MessageStruct lastMS;
         protected VCToolTask.MessageStruct currentMS;
 
-        protected VCToolTask(ResourceManager taskResources)
+        protected VCToolTask(ResourceManager taskResources) : base(taskResources)
         {
-            base.\u002Ector(taskResources);
             this.cancelEventName = "MSBuildConsole_CancelEvent" + Guid.NewGuid().ToString("N");
             this.cancelEvent = VCTaskNativeMethods.CreateEventW(IntPtr.Zero, false, false, this.cancelEventName);
             this.logPrivate = new TaskLoggingHelper((ITask)this);
-            this.logPrivate.set_TaskResources(AssemblyResources.PrimaryResources);
-            this.logPrivate.set_HelpKeywordPrefix("MSBuild.");
+            this.logPrivate.TaskResources = AssemblyResources.PrimaryResources;
+            this.logPrivate.HelpKeywordPrefix = "MSBuild.";
             this.IgnoreUnknownSwitchValues = false;
         }
 
@@ -69,7 +68,7 @@ namespace Microsoft.Build.CPPTasks
             return options;
         }
 
-        protected virtual Encoding ResponseFileEncoding
+        protected override Encoding ResponseFileEncoding
         {
             get
             {
@@ -101,7 +100,7 @@ namespace Microsoft.Build.CPPTasks
             }
         }
 
-        protected virtual MessageImportance StandardOutputLoggingImportance
+        protected override MessageImportance StandardOutputLoggingImportance
         {
             get
             {
@@ -109,7 +108,7 @@ namespace Microsoft.Build.CPPTasks
             }
         }
 
-        protected virtual MessageImportance StandardErrorLoggingImportance
+        protected override MessageImportance StandardErrorLoggingImportance
         {
             get
             {
@@ -164,19 +163,19 @@ namespace Microsoft.Build.CPPTasks
 
         public string EffectiveWorkingDirectory { get; set; }
 
-        protected virtual string GetWorkingDirectory()
+        protected override string GetWorkingDirectory()
         {
             return this.EffectiveWorkingDirectory;
         }
 
-        protected virtual string GenerateFullPathToTool()
+        protected override string GenerateFullPathToTool()
         {
-            return this.get_ToolName();
+            return this.ToolName;
         }
 
-        protected virtual bool ValidateParameters()
+        protected override bool ValidateParameters()
         {
-            return !this.logPrivate.get_HasLoggedErrors() && !((Task)this).get_Log().get_HasLoggedErrors();
+            return !this.logPrivate.HasLoggedErrors && !((Task)this).Log.HasLoggedErrors;
         }
 
         public string GenerateCommandLine(
@@ -206,7 +205,7 @@ namespace Microsoft.Build.CPPTasks
             return string.Empty;
         }
 
-        protected virtual string GenerateResponseFileCommands()
+        protected override string GenerateResponseFileCommands()
         {
             return this.GenerateResponseFileCommands(VCToolTask.CommandLineFormat.ForBuildLog, VCToolTask.EscapeFormat.Default);
         }
@@ -218,7 +217,7 @@ namespace Microsoft.Build.CPPTasks
             return this.GenerateResponseFileCommandsExceptSwitches(new string[0], format, escapeFormat);
         }
 
-        protected virtual string GenerateCommandLineCommands()
+        protected override string GenerateCommandLineCommands()
         {
             return this.GenerateCommandLineCommands(VCToolTask.CommandLineFormat.ForBuildLog, VCToolTask.EscapeFormat.Default);
         }
@@ -276,23 +275,23 @@ namespace Microsoft.Build.CPPTasks
             return ((object)commandLineBuilder).ToString();
         }
 
-        protected virtual bool HandleTaskExecutionErrors()
+        protected override bool HandleTaskExecutionErrors()
         {
             return this.IsAcceptableReturnValue() || base.HandleTaskExecutionErrors();
         }
 
-        public virtual bool Execute()
+        public override bool Execute()
         {
             bool flag = base.Execute();
             VCTaskNativeMethods.CloseHandle(this.cancelEvent);
-            this.PrintMessage(this.ParseLine((string)null), this.get_StandardOutputImportanceToUse());
+            this.PrintMessage(this.ParseLine((string)null), this.StandardOutputImportanceToUse);
             return flag;
         }
 
-        public virtual void Cancel()
+        public override void Cancel()
         {
             VCTaskNativeMethods.SetEvent(this.cancelEvent);
-            this.PrintMessage(this.ParseLine((string)null), this.get_StandardOutputImportanceToUse());
+            this.PrintMessage(this.ParseLine((string)null), this.StandardOutputImportanceToUse);
         }
 
         protected bool VerifyRequiredArgumentsArePresent(ToolSwitch property, bool throwOnError)
@@ -305,19 +304,19 @@ namespace Microsoft.Build.CPPTasks
                     {
                         string message;
                         if (string.Empty == argumentRelation.Value)
-                            message = ((Task)this).get_Log().FormatResourceString("MissingRequiredArgument", new object[2]
+                            message = ((Task)this).Log.FormatResourceString("MissingRequiredArgument", new object[2]
                             {
                 (object) argumentRelation.Argument,
                 (object) property.Name
                             });
                         else
-                            message = ((Task)this).get_Log().FormatResourceString("MissingRequiredArgumentWithValue", new object[3]
+                            message = ((Task)this).Log.FormatResourceString("MissingRequiredArgumentWithValue", new object[3]
                             {
                 (object) argumentRelation.Argument,
                 (object) property.Name,
                 (object) argumentRelation.Value
                             });
-                        ((Task)this).get_Log().LogError(message, new object[0]);
+                        ((Task)this).Log.LogError(message, new object[0]);
                         if (throwOnError)
                             throw new LoggerException(message);
                         return false;
@@ -333,7 +332,7 @@ namespace Microsoft.Build.CPPTasks
             {
                 foreach (string acceptableNonzeroExitCode in this.AcceptableNonzeroExitCodes)
                 {
-                    if (this.get_ExitCode() == Convert.ToInt32(acceptableNonzeroExitCode, (IFormatProvider)CultureInfo.InvariantCulture))
+                    if (this.ExitCode == Convert.ToInt32(acceptableNonzeroExitCode, (IFormatProvider)CultureInfo.InvariantCulture))
                         return true;
                 }
             }
@@ -589,7 +588,7 @@ namespace Microsoft.Build.CPPTasks
             return directoryName;
         }
 
-        protected virtual void LogEventsFromTextOutput(
+        protected override void LogEventsFromTextOutput(
           string singleLine,
           MessageImportance messageImportance)
         {
@@ -611,15 +610,15 @@ namespace Microsoft.Build.CPPTasks
                 if (!(category == "warning"))
                 {
                     if (category == "note")
-                        ((Task)this).get_Log().LogCriticalMessage((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
+                        ((Task)this).Log.LogCriticalMessage((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
                     else
-                        ((Task)this).get_Log().LogMessage(messageImportance, message.Text.TrimEnd(), new object[0]);
+                        ((Task)this).Log.LogMessage(messageImportance, message.Text.TrimEnd(), new object[0]);
                 }
                 else
-                    ((Task)this).get_Log().LogWarning((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
+                    ((Task)this).Log.LogWarning((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
             }
             else
-                ((Task)this).get_Log().LogError((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
+                ((Task)this).Log.LogError((string)null, message.Code, (string)null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(), new object[0]);
             message.Clear();
         }
 
@@ -644,7 +643,7 @@ namespace Microsoft.Build.CPPTasks
                         break;
                     }
                 }
-                catch (RegexMatchTimeoutException ex)
+                catch (RegexMatchTimeoutException)
                 {
                 }
             }
@@ -676,7 +675,7 @@ namespace Microsoft.Build.CPPTasks
                             return this.lastMS;
                         }
                     }
-                    catch (RegexMatchTimeoutException ex)
+                    catch (RegexMatchTimeoutException)
                     {
                     }
                 }

@@ -10,42 +10,42 @@ using System.Resources;
 
 namespace Microsoft.Build.Shared
 {
-  internal static class AssemblyResources
-  {
-    private static readonly ResourceManager resources = new ResourceManager("Microsoft.Build.CPPTasks.Strings", Assembly.GetExecutingAssembly());
-    private static readonly ResourceManager sharedResources = new ResourceManager("Microsoft.Build.CPPTasks.Strings.shared", Assembly.GetExecutingAssembly());
-
-    internal static string GetString(string name)
+    internal static class AssemblyResources
     {
-      return AssemblyResources.resources.GetString(name, CultureInfo.CurrentUICulture) ?? AssemblyResources.sharedResources.GetString(name, CultureInfo.CurrentUICulture);
-    }
+        private static readonly ResourceManager resources = new ResourceManager("Microsoft.Build.CPPTasks.Strings", Assembly.GetExecutingAssembly());
+        private static readonly ResourceManager sharedResources = new ResourceManager("Microsoft.Build.CPPTasks.Strings.shared", Assembly.GetExecutingAssembly());
 
-    internal static ResourceManager PrimaryResources
-    {
-      get
-      {
-        return AssemblyResources.resources;
-      }
-    }
+        internal static string GetString(string name)
+        {
+            return AssemblyResources.resources.GetString(name, CultureInfo.CurrentUICulture) ?? AssemblyResources.sharedResources.GetString(name, CultureInfo.CurrentUICulture);
+        }
 
-    internal static ResourceManager SharedResources
-    {
-      get
-      {
-        return AssemblyResources.sharedResources;
-      }
-    }
+        internal static ResourceManager PrimaryResources
+        {
+            get
+            {
+                return AssemblyResources.resources;
+            }
+        }
 
-    internal static string FormatString(string unformatted, params object[] args)
-    {
-      ErrorUtilities.VerifyThrowArgumentNull((object) unformatted, nameof (unformatted));
-      return ResourceUtilities.FormatString(unformatted, args);
-    }
+        internal static ResourceManager SharedResources
+        {
+            get
+            {
+                return AssemblyResources.sharedResources;
+            }
+        }
 
-    internal static string FormatResourceString(string resourceName, params object[] args)
-    {
-      ErrorUtilities.VerifyThrowArgumentNull((object) resourceName, nameof (resourceName));
-      return AssemblyResources.FormatString(AssemblyResources.GetString(resourceName), args);
+        internal static string FormatString(string unformatted, params object[] args)
+        {
+            ErrorUtilities.VerifyThrowArgumentNull((object)unformatted, nameof(unformatted));
+            return ResourceUtilities.FormatString(unformatted, args);
+        }
+
+        internal static string FormatResourceString(string resourceName, params object[] args)
+        {
+            ErrorUtilities.VerifyThrowArgumentNull((object)resourceName, nameof(resourceName));
+            return AssemblyResources.FormatString(AssemblyResources.GetString(resourceName), args);
+        }
     }
-  }
 }
