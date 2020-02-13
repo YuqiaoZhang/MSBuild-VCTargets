@@ -1,14 +1,12 @@
 ﻿namespace Microsoft.Build.Shared
 {
-    using System;
     using System.Globalization;
-    using System.Reflection;
     using System.Resources;
 
     internal static class AssemblyResources
     {
         private static readonly ResourceManager resources = Microsoft.Build.CPPTasks.Common.Strings.ResourceManager;
-        private static readonly ResourceManager sharedResources = null;
+        private static readonly ResourceManager sharedResources = Microsoft.Build.CPPTasks.Common.Strings.ResourceManager;
 
         internal static string FormatResourceString(string resourceName, params object[] args)
         {
