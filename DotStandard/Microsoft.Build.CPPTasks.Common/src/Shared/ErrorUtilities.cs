@@ -1,354 +1,323 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.Build.Shared.ErrorUtilities
-// Assembly: Microsoft.Build.CPPTasks.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-// MVID: 56FCFFC7-71F1-4251-A102-10C94CFDEED2
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.Build.CPPTasks.Common.dll
-
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-
-namespace Microsoft.Build.Shared
+﻿namespace Microsoft.Build.Shared
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Threading;
+
     internal static class ErrorUtilities
     {
         private static readonly bool throwExceptions = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MSBUILDDONOTTHROWINTERNAL"));
         private static readonly bool enableMSBuildDebugTracing = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MSBUILDENABLEDEBUGTRACING"));
 
-        public static void DebugTraceMessage(
-          string category,
-          string formatstring,
-          params object[] parameters)
+        public static void DebugTraceMessage(string category, string formatstring, params object[] parameters)
         {
-            if (!ErrorUtilities.enableMSBuildDebugTracing)
-                return;
-            if (parameters != null)
-                Trace.WriteLine(string.Format((IFormatProvider)CultureInfo.CurrentCulture, formatstring, parameters), category);
-            else
-                Trace.WriteLine(formatstring, category);
+            if (enableMSBuildDebugTracing)
+            {
+                if (parameters != null)
+                {
+                    Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, formatstring, parameters), category);
+                }
+                else
+                {
+                    Trace.WriteLine(formatstring, category);
+                }
+            }
         }
 
-        internal static void ThrowInternalError(string message, params object[] args)
+        internal static void ThrowArgument(string resourceName, params object[] args)
         {
-            if (ErrorUtilities.throwExceptions)
-                throw new InternalErrorException(ResourceUtilities.FormatString(message, args));
+            ThrowArgument(null, resourceName, args);
         }
 
-        internal static void ThrowInternalError(
-          string message,
-          Exception innerException,
-          params object[] args)
+        private static void ThrowArgument(Exception innerException, string resourceName, params object[] args)
         {
-            if (ErrorUtilities.throwExceptions)
-                throw new InternalErrorException(ResourceUtilities.FormatString(message, args), innerException);
+            if (throwExceptions)
+            {
+                throw new ArgumentException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString(resourceName, args), innerException);
+            }
         }
 
-        internal static void ThrowInternalErrorUnreachable()
+        internal static void ThrowArgumentOutOfRange(string parameterName)
         {
-            if (ErrorUtilities.throwExceptions)
-                throw new InternalErrorException("Unreachable?");
+            if (throwExceptions)
+            {
+                throw new ArgumentOutOfRangeException(parameterName);
+            }
         }
 
         internal static void ThrowIfTypeDoesNotImplementToString(object param)
         {
         }
 
-        internal static void VerifyThrowInternalNull(object parameter, string parameterName)
+        internal static void ThrowInternalError(string message, params object[] args)
         {
-            if (parameter != null)
-                return;
-            ErrorUtilities.ThrowInternalError("{0} unexpectedly null", (object)parameterName);
+            if (throwExceptions)
+            {
+                throw new Microsoft.Build.Shared.InternalErrorException(Microsoft.Build.Shared.ResourceUtilities.FormatString(message, args));
+            }
         }
 
-        internal static void VerifyThrowInternalLockHeld(object locker)
+        internal static void ThrowInternalError(string message, Exception innerException, params object[] args)
         {
-            if (Monitor.IsEntered(locker))
-                return;
-            ErrorUtilities.ThrowInternalError("Lock should already have been taken");
+            if (throwExceptions)
+            {
+                throw new Microsoft.Build.Shared.InternalErrorException(Microsoft.Build.Shared.ResourceUtilities.FormatString(message, args), innerException);
+            }
         }
 
-        internal static void VerifyThrowInternalLength(string parameterValue, string parameterName)
+        internal static void ThrowInternalErrorUnreachable()
         {
-            ErrorUtilities.VerifyThrowInternalNull((object)parameterValue, parameterName);
-            if (parameterValue.Length != 0)
-                return;
-            ErrorUtilities.ThrowInternalError("{0} unexpectedly empty", (object)parameterName);
-        }
-
-        internal static void VerifyThrowInternalRooted(string value)
-        {
-            if (Path.IsPathRooted(value))
-                return;
-            ErrorUtilities.ThrowInternalError("{0} unexpectedly not a rooted path", (object)value);
-        }
-
-        internal static void VerifyThrow(bool condition, string unformattedMessage)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInternalError(unformattedMessage, (Exception)null, (object[])null);
-        }
-
-        internal static void VerifyThrow(bool condition, string unformattedMessage, object arg0)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInternalError(unformattedMessage, arg0);
-        }
-
-        internal static void VerifyThrow(
-          bool condition,
-          string unformattedMessage,
-          object arg0,
-          object arg1)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInternalError(unformattedMessage, arg0, arg1);
-        }
-
-        internal static void VerifyThrow(
-          bool condition,
-          string unformattedMessage,
-          object arg0,
-          object arg1,
-          object arg2)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInternalError(unformattedMessage, arg0, arg1, arg2);
-        }
-
-        internal static void VerifyThrow(
-          bool condition,
-          string unformattedMessage,
-          object arg0,
-          object arg1,
-          object arg2,
-          object arg3)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInternalError(unformattedMessage, arg0, arg1, arg2, arg3);
+            if (throwExceptions)
+            {
+                throw new Microsoft.Build.Shared.InternalErrorException("Unreachable?");
+            }
         }
 
         internal static void ThrowInvalidOperation(string resourceName, params object[] args)
         {
-            if (ErrorUtilities.throwExceptions)
-                throw new InvalidOperationException(ResourceUtilities.FormatResourceString(resourceName, args));
+            if (throwExceptions)
+            {
+                throw new InvalidOperationException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString(resourceName, args));
+            }
         }
 
-        internal static void VerifyThrowInvalidOperation(bool condition, string resourceName)
+        internal static void VerifyThrow(bool condition, string unformattedMessage)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInvalidOperation(resourceName, (object[])null);
+            if (!condition)
+            {
+                ThrowInternalError(unformattedMessage, null, null);
+            }
         }
 
-        internal static void VerifyThrowInvalidOperation(
-          bool condition,
-          string resourceName,
-          object arg0)
+        internal static void VerifyThrow(bool condition, string unformattedMessage, object arg0)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInvalidOperation(resourceName, arg0);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0 };
+                ThrowInternalError(unformattedMessage, args);
+            }
         }
 
-        internal static void VerifyThrowInvalidOperation(
-          bool condition,
-          string resourceName,
-          object arg0,
-          object arg1)
+        internal static void VerifyThrow(bool condition, string unformattedMessage, object arg0, object arg1)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInvalidOperation(resourceName, arg0, arg1);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1 };
+                ThrowInternalError(unformattedMessage, args);
+            }
         }
 
-        internal static void VerifyThrowInvalidOperation(
-          bool condition,
-          string resourceName,
-          object arg0,
-          object arg1,
-          object arg2)
+        internal static void VerifyThrow(bool condition, string unformattedMessage, object arg0, object arg1, object arg2)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowInvalidOperation(resourceName, arg0, arg1, arg2);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1, arg2 };
+                ThrowInternalError(unformattedMessage, args);
+            }
         }
 
-        internal static void ThrowArgument(string resourceName, params object[] args)
+        internal static void VerifyThrow(bool condition, string unformattedMessage, object arg0, object arg1, object arg2, object arg3)
         {
-            ErrorUtilities.ThrowArgument((Exception)null, resourceName, args);
-        }
-
-        private static void ThrowArgument(
-          Exception innerException,
-          string resourceName,
-          params object[] args)
-        {
-            if (ErrorUtilities.throwExceptions)
-                throw new ArgumentException(ResourceUtilities.FormatResourceString(resourceName, args), innerException);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1, arg2, arg3 };
+                ThrowInternalError(unformattedMessage, args);
+            }
         }
 
         internal static void VerifyThrowArgument(bool condition, string resourceName)
         {
-            ErrorUtilities.VerifyThrowArgument(condition, (Exception)null, resourceName);
+            VerifyThrowArgument(condition, null, resourceName);
+        }
+
+        internal static void VerifyThrowArgument(bool condition, Exception innerException, string resourceName)
+        {
+            if (!condition)
+            {
+                ThrowArgument(innerException, resourceName, null);
+            }
         }
 
         internal static void VerifyThrowArgument(bool condition, string resourceName, object arg0)
         {
-            ErrorUtilities.VerifyThrowArgument(condition, (Exception)null, resourceName, arg0);
+            VerifyThrowArgument(condition, null, resourceName, arg0);
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          string resourceName,
-          object arg0,
-          object arg1)
+        internal static void VerifyThrowArgument(bool condition, Exception innerException, string resourceName, object arg0)
         {
-            ErrorUtilities.VerifyThrowArgument(condition, (Exception)null, resourceName, arg0, arg1);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0 };
+                ThrowArgument(innerException, resourceName, args);
+            }
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          string resourceName,
-          object arg0,
-          object arg1,
-          object arg2)
+        internal static void VerifyThrowArgument(bool condition, string resourceName, object arg0, object arg1)
         {
-            ErrorUtilities.VerifyThrowArgument(condition, (Exception)null, resourceName, arg0, arg1, arg2);
+            VerifyThrowArgument(condition, null, resourceName, arg0, arg1);
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          string resourceName,
-          object arg0,
-          object arg1,
-          object arg2,
-          object arg3)
+        internal static void VerifyThrowArgument(bool condition, Exception innerException, string resourceName, object arg0, object arg1)
         {
-            ErrorUtilities.VerifyThrowArgument(condition, (Exception)null, resourceName, arg0, arg1, arg2, arg3);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1 };
+                ThrowArgument(innerException, resourceName, args);
+            }
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          Exception innerException,
-          string resourceName)
+        internal static void VerifyThrowArgument(bool condition, string resourceName, object arg0, object arg1, object arg2)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgument(innerException, resourceName, (object[])null);
+            VerifyThrowArgument(condition, null, resourceName, arg0, arg1, arg2);
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          Exception innerException,
-          string resourceName,
-          object arg0)
+        internal static void VerifyThrowArgument(bool condition, Exception innerException, string resourceName, object arg0, object arg1, object arg2)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgument(innerException, resourceName, arg0);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1, arg2 };
+                ThrowArgument(innerException, resourceName, args);
+            }
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          Exception innerException,
-          string resourceName,
-          object arg0,
-          object arg1)
+        internal static void VerifyThrowArgument(bool condition, string resourceName, object arg0, object arg1, object arg2, object arg3)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgument(innerException, resourceName, arg0, arg1);
+            VerifyThrowArgument(condition, null, resourceName, arg0, arg1, arg2, arg3);
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          Exception innerException,
-          string resourceName,
-          object arg0,
-          object arg1,
-          object arg2)
+        internal static void VerifyThrowArgument(bool condition, Exception innerException, string resourceName, object arg0, object arg1, object arg2, object arg3)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgument(innerException, resourceName, arg0, arg1, arg2);
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1, arg2, arg3 };
+                ThrowArgument(innerException, resourceName, args);
+            }
         }
 
-        internal static void VerifyThrowArgument(
-          bool condition,
-          Exception innerException,
-          string resourceName,
-          object arg0,
-          object arg1,
-          object arg2,
-          object arg3)
+        internal static void VerifyThrowArgumentArraysSameLength(Array parameter1, Array parameter2, string parameter1Name, string parameter2Name)
         {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgument(innerException, resourceName, arg0, arg1, arg2, arg3);
-        }
-
-        internal static void ThrowArgumentOutOfRange(string parameterName)
-        {
-            if (ErrorUtilities.throwExceptions)
-                throw new ArgumentOutOfRangeException(parameterName);
-        }
-
-        internal static void VerifyThrowArgumentOutOfRange(bool condition, string parameterName)
-        {
-            if (condition)
-                return;
-            ErrorUtilities.ThrowArgumentOutOfRange(parameterName);
+            VerifyThrowArgumentNull(parameter1, parameter1Name);
+            VerifyThrowArgumentNull(parameter2, parameter2Name);
+            if ((parameter1.Length != parameter2.Length) && throwExceptions)
+            {
+                object[] args = new object[] { parameter1Name, parameter2Name };
+                throw new ArgumentException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString("Shared.ParametersMustHaveTheSameLength", args));
+            }
         }
 
         internal static void VerifyThrowArgumentLength(string parameter, string parameterName)
         {
-            ErrorUtilities.VerifyThrowArgumentNull((object)parameter, parameterName);
-            if (parameter.Length == 0 && ErrorUtilities.throwExceptions)
-                throw new ArgumentException(ResourceUtilities.FormatResourceString("Shared.ParameterCannotHaveZeroLength", (object)parameterName));
+            VerifyThrowArgumentNull(parameter, parameterName);
+            if ((parameter.Length == 0) && throwExceptions)
+            {
+                object[] args = new object[] { parameterName };
+                throw new ArgumentException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString("Shared.ParameterCannotHaveZeroLength", args));
+            }
         }
 
         internal static void VerifyThrowArgumentLengthIfNotNull(string parameter, string parameterName)
         {
-            switch (parameter)
+            if ((parameter != null) && ((parameter.Length == 0) && throwExceptions))
             {
-                case "":
-                    if (!ErrorUtilities.throwExceptions)
-                        break;
-                    throw new ArgumentException(ResourceUtilities.FormatResourceString("Shared.ParameterCannotHaveZeroLength", (object)parameterName));
+                object[] args = new object[] { parameterName };
+                throw new ArgumentException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString("Shared.ParameterCannotHaveZeroLength", args));
             }
         }
 
         internal static void VerifyThrowArgumentNull(object parameter, string parameterName)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(parameter, parameterName, "Shared.ParameterCannotBeNull");
+            VerifyThrowArgumentNull(parameter, parameterName, "Shared.ParameterCannotBeNull");
         }
 
-        internal static void VerifyThrowArgumentNull(
-          object parameter,
-          string parameterName,
-          string resourceName)
+        internal static void VerifyThrowArgumentNull(object parameter, string parameterName, string resourceName)
         {
-            if (parameter == null && ErrorUtilities.throwExceptions)
-                throw new ArgumentNullException(ResourceUtilities.FormatResourceString(resourceName, (object)parameterName), (Exception)null);
+            if ((parameter == null) && throwExceptions)
+            {
+                object[] args = new object[] { parameterName };
+                throw new ArgumentNullException(Microsoft.Build.Shared.ResourceUtilities.FormatResourceString(resourceName, args), (Exception)null);
+            }
         }
 
-        internal static void VerifyThrowArgumentArraysSameLength(
-          Array parameter1,
-          Array parameter2,
-          string parameter1Name,
-          string parameter2Name)
+        internal static void VerifyThrowArgumentOutOfRange(bool condition, string parameterName)
         {
-            ErrorUtilities.VerifyThrowArgumentNull((object)parameter1, parameter1Name);
-            ErrorUtilities.VerifyThrowArgumentNull((object)parameter2, parameter2Name);
-            if (parameter1.Length != parameter2.Length && ErrorUtilities.throwExceptions)
-                throw new ArgumentException(ResourceUtilities.FormatResourceString("Shared.ParametersMustHaveTheSameLength", (object)parameter1Name, (object)parameter2Name));
+            if (!condition)
+            {
+                ThrowArgumentOutOfRange(parameterName);
+            }
+        }
+
+        internal static void VerifyThrowInternalLength(string parameterValue, string parameterName)
+        {
+            VerifyThrowInternalNull(parameterValue, parameterName);
+            if (parameterValue.Length == 0)
+            {
+                object[] args = new object[] { parameterName };
+                ThrowInternalError("{0} unexpectedly empty", args);
+            }
+        }
+
+        internal static void VerifyThrowInternalLockHeld(object locker)
+        {
+            if (!Monitor.IsEntered(locker))
+            {
+                ThrowInternalError("Lock should already have been taken", new object[0]);
+            }
+        }
+
+        internal static void VerifyThrowInternalNull(object parameter, string parameterName)
+        {
+            if (parameter == null)
+            {
+                object[] args = new object[] { parameterName };
+                ThrowInternalError("{0} unexpectedly null", args);
+            }
+        }
+
+        internal static void VerifyThrowInternalRooted(string value)
+        {
+            if (!Path.IsPathRooted(value))
+            {
+                object[] args = new object[] { value };
+                ThrowInternalError("{0} unexpectedly not a rooted path", args);
+            }
+        }
+
+        internal static void VerifyThrowInvalidOperation(bool condition, string resourceName)
+        {
+            if (!condition)
+            {
+                ThrowInvalidOperation(resourceName, null);
+            }
+        }
+
+        internal static void VerifyThrowInvalidOperation(bool condition, string resourceName, object arg0)
+        {
+            if (!condition)
+            {
+                object[] args = new object[] { arg0 };
+                ThrowInvalidOperation(resourceName, args);
+            }
+        }
+
+        internal static void VerifyThrowInvalidOperation(bool condition, string resourceName, object arg0, object arg1)
+        {
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1 };
+                ThrowInvalidOperation(resourceName, args);
+            }
+        }
+
+        internal static void VerifyThrowInvalidOperation(bool condition, string resourceName, object arg0, object arg1, object arg2)
+        {
+            if (!condition)
+            {
+                object[] args = new object[] { arg0, arg1, arg2 };
+                ThrowInvalidOperation(resourceName, args);
+            }
         }
     }
 }
+

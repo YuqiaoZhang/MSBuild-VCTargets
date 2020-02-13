@@ -1,42 +1,38 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.Build.CPPTasks.ToolSwitch
-// Assembly: Microsoft.Build.CPPTasks.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-// MVID: 56FCFFC7-71F1-4251-A102-10C94CFDEED2
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.Build.CPPTasks.Common.dll
-
-using Microsoft.Build.Framework;
-using Microsoft.Build.Shared;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Microsoft.Build.CPPTasks
+﻿namespace Microsoft.Build.CPPTasks
 {
+    using Microsoft.Build.Framework;
+    using Microsoft.Build.Shared;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
+
     public class ToolSwitch
     {
-        private string name = string.Empty;
-        private string falseSuffix = string.Empty;
-        private string trueSuffix = string.Empty;
-        private string separator = string.Empty;
-        private string argumentParameter = string.Empty;
-        private string fallback = string.Empty;
-        private LinkedList<string> parents = new LinkedList<string>();
-        private LinkedList<KeyValuePair<string, string>> overrides = new LinkedList<KeyValuePair<string, string>>();
-        private bool booleanValue = true;
-        private string value = string.Empty;
-        private string switchValue = string.Empty;
-        private string reverseSwitchValue = string.Empty;
-        private string description = string.Empty;
-        private string displayName = string.Empty;
+        private string name;
         private ToolSwitchType type;
+        private string falseSuffix;
+        private string trueSuffix;
+        private string separator;
+        private string argumentParameter;
+        private string fallback;
         private bool argumentRequired;
         private bool required;
+        private LinkedList<string> parents;
+        private LinkedList<KeyValuePair<string, string>> overrides;
         private ArrayList argumentRelationList;
         private bool isValid;
         private bool reversible;
+        private bool booleanValue;
         private int number;
         private string[] stringList;
         private ITaskItem taskItem;
         private ITaskItem[] taskItemArray;
+        private string value;
+        private string switchValue;
+        private string reverseSwitchValue;
+        private string description;
+        private string displayName;
         private const string typeBoolean = "ToolSwitchType.Boolean";
         private const string typeInteger = "ToolSwitchType.Integer";
         private const string typeITaskItem = "ToolSwitchType.ITaskItem";
@@ -45,10 +41,38 @@ namespace Microsoft.Build.CPPTasks
 
         public ToolSwitch()
         {
+            this.name = string.Empty;
+            this.falseSuffix = string.Empty;
+            this.trueSuffix = string.Empty;
+            this.separator = string.Empty;
+            this.argumentParameter = string.Empty;
+            this.fallback = string.Empty;
+            this.parents = new LinkedList<string>();
+            this.overrides = new LinkedList<KeyValuePair<string, string>>();
+            this.booleanValue = true;
+            this.value = string.Empty;
+            this.switchValue = string.Empty;
+            this.reverseSwitchValue = string.Empty;
+            this.description = string.Empty;
+            this.displayName = string.Empty;
         }
 
         public ToolSwitch(ToolSwitchType toolType)
         {
+            this.name = string.Empty;
+            this.falseSuffix = string.Empty;
+            this.trueSuffix = string.Empty;
+            this.separator = string.Empty;
+            this.argumentParameter = string.Empty;
+            this.fallback = string.Empty;
+            this.parents = new LinkedList<string>();
+            this.overrides = new LinkedList<KeyValuePair<string, string>>();
+            this.booleanValue = true;
+            this.value = string.Empty;
+            this.switchValue = string.Empty;
+            this.reverseSwitchValue = string.Empty;
+            this.description = string.Empty;
+            this.displayName = string.Empty;
             this.type = toolType;
         }
 
@@ -234,21 +258,11 @@ namespace Microsoft.Build.CPPTasks
             }
         }
 
-        public LinkedList<string> Parents
-        {
-            get
-            {
-                return this.parents;
-            }
-        }
+        public LinkedList<string> Parents =>
+            this.parents;
 
-        public LinkedList<KeyValuePair<string, string>> Overrides
-        {
-            get
-            {
-                return this.overrides;
-            }
-        }
+        public LinkedList<KeyValuePair<string, string>> Overrides =>
+            this.overrides;
 
         public ArrayList ArgumentRelationList
         {
@@ -266,12 +280,12 @@ namespace Microsoft.Build.CPPTasks
         {
             get
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", (object)"ToolSwitchType.Boolean");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 return this.booleanValue;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", (object)"ToolSwitchType.Boolean");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 this.booleanValue = value;
             }
         }
@@ -280,12 +294,12 @@ namespace Microsoft.Build.CPPTasks
         {
             get
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", (object)"ToolSwitchType.Integer");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 return this.number;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", (object)"ToolSwitchType.Integer");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 this.number = value;
             }
         }
@@ -294,12 +308,12 @@ namespace Microsoft.Build.CPPTasks
         {
             get
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.StringArray || this.type == ToolSwitchType.StringPathArray, "InvalidType", (object)"ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 return this.stringList;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.StringArray || this.type == ToolSwitchType.StringPathArray, "InvalidType", (object)"ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 this.stringList = value;
             }
         }
@@ -308,12 +322,12 @@ namespace Microsoft.Build.CPPTasks
         {
             get
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", (object)"ToolSwitchType.ITaskItem");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 return this.taskItem;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", (object)"ToolSwitchType.ITaskItem");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 this.taskItem = value;
             }
         }
@@ -322,14 +336,15 @@ namespace Microsoft.Build.CPPTasks
         {
             get
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", (object)"ToolSwitchType.ITaskItemArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 return this.taskItemArray;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", (object)"ToolSwitchType.ITaskItemArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 this.taskItemArray = value;
             }
         }
     }
 }
+

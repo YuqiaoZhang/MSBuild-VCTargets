@@ -1,51 +1,42 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.Build.Shared.AssemblyResources
-// Assembly: Microsoft.Build.CPPTasks.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-// MVID: 56FCFFC7-71F1-4251-A102-10C94CFDEED2
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.Build.CPPTasks.Common.dll
-
-using System.Globalization;
-using System.Reflection;
-using System.Resources;
-
-namespace Microsoft.Build.Shared
+﻿namespace Microsoft.Build.Shared
 {
+    using System;
+    using System.Globalization;
+    using System.Reflection;
+    using System.Resources;
+
     internal static class AssemblyResources
     {
         private static readonly ResourceManager resources = new ResourceManager("Microsoft.Build.CPPTasks.Strings", Assembly.GetExecutingAssembly());
         private static readonly ResourceManager sharedResources = new ResourceManager("Microsoft.Build.CPPTasks.Strings.shared", Assembly.GetExecutingAssembly());
 
-        internal static string GetString(string name)
+        internal static string FormatResourceString(string resourceName, params object[] args)
         {
-            return AssemblyResources.resources.GetString(name, CultureInfo.CurrentUICulture) ?? AssemblyResources.sharedResources.GetString(name, CultureInfo.CurrentUICulture);
-        }
-
-        internal static ResourceManager PrimaryResources
-        {
-            get
-            {
-                return AssemblyResources.resources;
-            }
-        }
-
-        internal static ResourceManager SharedResources
-        {
-            get
-            {
-                return AssemblyResources.sharedResources;
-            }
+            Microsoft.Build.Shared.ErrorUtilities.VerifyThrowArgumentNull(resourceName, "resourceName");
+            return FormatString(GetString(resourceName), args);
         }
 
         internal static string FormatString(string unformatted, params object[] args)
         {
-            ErrorUtilities.VerifyThrowArgumentNull((object)unformatted, nameof(unformatted));
-            return ResourceUtilities.FormatString(unformatted, args);
+            Microsoft.Build.Shared.ErrorUtilities.VerifyThrowArgumentNull(unformatted, "unformatted");
+            return Microsoft.Build.Shared.ResourceUtilities.FormatString(unformatted, args);
         }
 
-        internal static string FormatResourceString(string resourceName, params object[] args)
+        internal static string GetString(string name)
         {
-            ErrorUtilities.VerifyThrowArgumentNull((object)resourceName, nameof(resourceName));
-            return AssemblyResources.FormatString(AssemblyResources.GetString(resourceName), args);
+            string str = resources.GetString(name, CultureInfo.CurrentUICulture);
+            if (str == null)
+            {
+                str = sharedResources.GetString(name, CultureInfo.CurrentUICulture);
+            }
+            return str;
         }
+
+        internal static ResourceManager PrimaryResources =>
+            resources;
+
+        internal static ResourceManager SharedResources =>
+            sharedResources;
     }
 }
+
