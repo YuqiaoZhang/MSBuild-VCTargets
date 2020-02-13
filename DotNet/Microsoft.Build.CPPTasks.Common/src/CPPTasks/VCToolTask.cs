@@ -584,7 +584,7 @@
 
         protected virtual void PrintMessage(MessageStruct message, MessageImportance messageImportance)
         {
-            if ((message != null) && (message.Text.Length > 0))
+            if ((message != null) && (message.Text != null) && (message.Text.Length > 0))
             {
                 string category = message.Category;
                 if ((category == "fatal error") || (category == "error"))
@@ -595,13 +595,13 @@
                 {
                     base.Log.LogWarning(null, message.Code, null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(new char[0]), new object[0]);
                 }
-                else if (category != "note")
+                else if (category == "note")
                 {
-                    base.Log.LogMessage(messageImportance, message.Text.TrimEnd(new char[0]), new object[0]);
+                    base.Log.LogCriticalMessage(null, message.Code, null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(new char[0]), new object[0]);
                 }
                 else
                 {
-                    base.Log.LogCriticalMessage(null, message.Code, null, message.Filename, message.Line, message.Column, 0, 0, message.Text.TrimEnd(new char[0]), new object[0]);
+                    base.Log.LogMessage(messageImportance, message.Text.TrimEnd(new char[0]), new object[0]);
                 }
                 message.Clear();
             }
