@@ -7,8 +7,8 @@
 
     internal static class AssemblyResources
     {
-        private static readonly ResourceManager resources = new ResourceManager("Microsoft.Build.CPPTasks.Strings", Assembly.GetExecutingAssembly());
-        private static readonly ResourceManager sharedResources = new ResourceManager("Microsoft.Build.CPPTasks.Strings.shared", Assembly.GetExecutingAssembly());
+        private static readonly ResourceManager resources = Microsoft.Build.CPPTasks.Common.Strings.ResourceManager;
+        private static readonly ResourceManager sharedResources = null;
 
         internal static string FormatResourceString(string resourceName, params object[] args)
         {

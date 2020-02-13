@@ -18,7 +18,7 @@
         private string firstWriteTlog;
         private static Regex gccMessageRegex = new Regex(@"^\s*(?<FILENAME>[^:]*):(?<LINE>\d*):(?<COLUMN>\d*):\s*(?<CATEGORY>fatal error|error|warning|note):(?<TEXT>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public ClangCompile() : base(new ResourceManager("Microsoft.Build.CPPTasks.Strings", Assembly.GetExecutingAssembly()))
+        public ClangCompile() : base(Microsoft.Build.CPPTasks.Common.Strings.ResourceManager)
         {
             this.preprocessOutput = new ITaskItem[0];
             this.firstReadTlog = typeof(ClangCompile).FullName + ".read.1.tlog";
