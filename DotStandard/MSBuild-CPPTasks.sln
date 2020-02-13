@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Build.CPPTasks.Common", "Microsoft.Build.CPPTasks.Common\Microsoft.Build.CPPTasks.Common.csproj", "{7D48EBF4-DC06-4243-B2C9-C1993A681A8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.CPPTasks.Common", "Microsoft.Build.CPPTasks.Common\Microsoft.Build.CPPTasks.Common.csproj", "{7D48EBF4-DC06-4243-B2C9-C1993A681A8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Utilities.Extension", "Microsoft.Build.Utilities.Extension\Microsoft.Build.Utilities.Extension.csproj", "{6A453484-7F8C-430B-AE21-50C0B3C7B954}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7D48EBF4-DC06-4243-B2C9-C1993A681A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D48EBF4-DC06-4243-B2C9-C1993A681A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D48EBF4-DC06-4243-B2C9-C1993A681A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

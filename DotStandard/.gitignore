@@ -1,3 +1,5 @@
 .vs
 Microsoft.Build.CPPTasks.Common/bin
 Microsoft.Build.CPPTasks.Common/obj
+Microsoft.Build.Utilities.Extension/bin
+Microsoft.Build.Utilities.Extension/obj
