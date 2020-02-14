@@ -124,7 +124,7 @@ namespace Microsoft.Build.Shared
             }
         }
 
-        public class TempWorkingDirectory : IDisposable
+        internal class TempWorkingDirectory : IDisposable
         {
             public string Path { get; }
 
