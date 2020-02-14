@@ -84,7 +84,7 @@ namespace Microsoft.Build.Utilities.Extension
         private static readonly List<string> s_commonApplicationDataPaths;
 
         // The name of the standalone tracker tool.
-        private static readonly string s_TrackerFilename = "Tracker.exe";
+        private static readonly string s_TrackerFilename = "Tracker.dll";
 
         // The name of the assembly that is injected into the executing process.
         // Detours handles picking between FileTracker{32,64}.dll so only mention one.
