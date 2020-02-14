@@ -20,6 +20,7 @@
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.IO.Pipes;
+    using Microsoft.Build.Shared.Extension;
 
     public abstract class TrackedVCToolTask : VCToolTask
     {
@@ -727,7 +728,7 @@
                     }
                     catch (Exception exception1)
                     {
-                        if (Microsoft.Build.Shared.ExceptionHandling.NotExpectedException(exception1))
+                        if (ExceptionHandling.NotExpectedException(exception1))
                         {
                             throw;
                         }
@@ -742,7 +743,7 @@
                     }
                     catch (Exception exception3)
                     {
-                        if (Microsoft.Build.Shared.ExceptionHandling.NotExpectedException(exception3))
+                        if (ExceptionHandling.NotExpectedException(exception3))
                         {
                             throw;
                         }

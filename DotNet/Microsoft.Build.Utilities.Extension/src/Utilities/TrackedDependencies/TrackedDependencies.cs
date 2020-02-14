@@ -6,6 +6,7 @@ using System.IO;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Shared;
+using Microsoft.Build.Shared.Extension;
 using Microsoft.Build.Shared.FileSystem;
 
 namespace Microsoft.Build.Utilities.Extension

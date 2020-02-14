@@ -20,6 +20,7 @@ using PropertyElement = Microsoft.Build.Evaluation.ToolsetElement.PropertyElemen
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Build.Shared.FileSystem;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Shared
 {

@@ -3,6 +3,7 @@
 
 using System.Resources;
 using System.Globalization;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Shared
 {

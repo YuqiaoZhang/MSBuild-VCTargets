@@ -11,13 +11,13 @@ using System.Threading;
 #if BUILDINGAPPXTASKS
 namespace Microsoft.Build.AppxPackage.Shared
 #else
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 #endif
 {
     /// <summary>
     /// This class contains methods that are useful for error checking and validation.
     /// </summary>
-    internal static class ErrorUtilities
+    public static class ErrorUtilities
     {
         /// <summary>
         /// Emergency escape hatch. If a customer hits a bug in the shipped product causing an internal exception,

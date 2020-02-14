@@ -1,5 +1,6 @@
 ﻿namespace Microsoft.Build.Shared
 {
+    using Microsoft.Build.Shared.Extension;
     using Microsoft.Win32.SafeHandles;
     using System;
     using System.Collections.Generic;

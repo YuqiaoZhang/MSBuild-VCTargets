@@ -16,6 +16,7 @@ using Microsoft.Build.Utilities;
 using MSBuildConstants = Microsoft.Build.Tasks.MSBuildConstants;
 #else
 using MSBuildConstants = Microsoft.Build.Shared.MSBuildConstants;
+using Microsoft.Build.Shared.Extension;
 #endif
 
 namespace Microsoft.Build

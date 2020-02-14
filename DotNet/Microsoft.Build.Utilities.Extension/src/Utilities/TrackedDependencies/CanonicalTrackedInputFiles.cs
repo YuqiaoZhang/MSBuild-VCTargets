@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Shared;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Utilities.Extension
 {

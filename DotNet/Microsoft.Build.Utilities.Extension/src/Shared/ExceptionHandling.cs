@@ -20,13 +20,13 @@ using System.Xml.Schema;
 using System.Runtime.Serialization;
 #endif
 
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 #endif
 {
     /// <summary>
     /// Utility methods for classifying and handling exceptions.
     /// </summary>
-    internal static class ExceptionHandling
+    public static class ExceptionHandling
     {
         private static readonly string s_debugDumpPath;
 

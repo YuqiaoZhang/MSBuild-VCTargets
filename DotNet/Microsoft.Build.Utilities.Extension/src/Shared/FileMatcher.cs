@@ -14,6 +14,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Microsoft.Build.Shared.FileSystem;
 using Microsoft.Build.Utilities;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Shared
 {

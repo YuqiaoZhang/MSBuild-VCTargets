@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Build.Shared.FileSystem;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Shared
 {

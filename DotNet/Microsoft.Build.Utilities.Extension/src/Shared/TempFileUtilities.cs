@@ -6,13 +6,13 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.Build.Shared.FileSystem;
 
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 {
     /// <summary>
     /// This class contains utility methods for file IO.
     /// It is in a separate file so that it can be selectively included into an assembly.
     /// </summary>
-    internal static partial class FileUtilities
+    public static partial class FileUtilities
     {
         /// <summary>
         /// Generates a unique directory name in the temporary folder.  

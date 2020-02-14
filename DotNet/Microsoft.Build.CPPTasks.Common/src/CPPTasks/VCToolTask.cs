@@ -2,6 +2,7 @@
 {
     using Microsoft.Build.Framework;
     using Microsoft.Build.Shared;
+    using Microsoft.Build.Shared.Extension;
     using Microsoft.Build.Utilities;
     using System;
     using System.Collections;
@@ -255,7 +256,7 @@
 
         protected static string EnsureTrailingSlash(string directoryName)
         {
-            Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(directoryName != null, "InternalError");
+            ErrorUtilities.VerifyThrow(directoryName != null, "InternalError");
             if (!string.IsNullOrEmpty(directoryName))
             {
                 char ch = directoryName[directoryName.Length - 1];
@@ -344,7 +345,7 @@
                         EmitStringArraySwitch(builder, toolSwitch, format, escapeFormat);
                         return;
                 }
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(false, "InternalError");
+                ErrorUtilities.VerifyThrow(false, "InternalError");
             }
         }
 

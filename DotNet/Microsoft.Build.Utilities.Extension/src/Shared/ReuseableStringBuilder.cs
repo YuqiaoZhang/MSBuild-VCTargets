@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.Build.Shared;
+using Microsoft.Build.Shared.Extension;
 
 namespace Microsoft.Build.Shared
 {

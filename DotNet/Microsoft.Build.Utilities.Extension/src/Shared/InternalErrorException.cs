@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 {
     /// <summary>
     /// This exception is to be thrown whenever an assumption we have made in the code turns out to be false. Thus, if this
@@ -21,7 +21,7 @@ namespace Microsoft.Build.Shared
     ///     
     /// </summary>
     [Serializable]
-    internal sealed class InternalErrorException : Exception
+    public sealed class InternalErrorException : Exception
     {
         /// <summary>
         /// Default constructor.

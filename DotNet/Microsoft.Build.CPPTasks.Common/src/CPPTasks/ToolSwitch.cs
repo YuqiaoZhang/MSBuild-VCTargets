@@ -2,6 +2,7 @@
 {
     using Microsoft.Build.Framework;
     using Microsoft.Build.Shared;
+    using Microsoft.Build.Shared.Extension;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -280,12 +281,12 @@
         {
             get
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 return this.booleanValue;
             }
             set
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 this.booleanValue = value;
             }
         }
@@ -294,12 +295,12 @@
         {
             get
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 return this.number;
             }
             set
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 this.number = value;
             }
         }
@@ -308,12 +309,12 @@
         {
             get
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 return this.stringList;
             }
             set
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                ErrorUtilities.VerifyThrow((this.type == ToolSwitchType.StringArray) || (this.type == ToolSwitchType.StringPathArray), "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 this.stringList = value;
             }
         }
@@ -322,12 +323,12 @@
         {
             get
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 return this.taskItem;
             }
             set
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 this.taskItem = value;
             }
         }
@@ -336,12 +337,12 @@
         {
             get
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 return this.taskItemArray;
             }
             set
             {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
+                ErrorUtilities.VerifyThrow(this.type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 this.taskItemArray = value;
             }
         }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Shared;
+using Microsoft.Build.Shared.Extension;
 using Microsoft.Build.Shared.FileSystem;
 
 namespace Microsoft.Build.Utilities.Extension

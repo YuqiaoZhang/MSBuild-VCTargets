@@ -14,13 +14,13 @@ using System.ComponentModel;
 #if BUILDINGAPPXTASKS
 namespace Microsoft.Build.AppxPackage.Shared
 #else
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 #endif
 {
     /// <summary>
     /// This class contains utility methods for dealing with resources.
     /// </summary>
-    internal static class ResourceUtilities
+    public static class ResourceUtilities
     {
         /// <summary>
         /// Extracts the message code (if any) prefixed to the given string. 

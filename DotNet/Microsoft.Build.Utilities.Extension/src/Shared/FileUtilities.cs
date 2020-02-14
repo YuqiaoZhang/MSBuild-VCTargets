@@ -19,14 +19,14 @@ using System.Threading;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Shared.FileSystem;
 
-namespace Microsoft.Build.Shared
+namespace Microsoft.Build.Shared.Extension
 {
     /// <summary>
     /// This class contains utility methods for file IO.
     /// PERF\COVERAGE NOTE: Try to keep classes in 'shared' as granular as possible. All the methods in
     /// each class get pulled into the resulting assembly.
     /// </summary>
-    internal static partial class FileUtilities
+    public static partial class FileUtilities
     {
         // A list of possible test runners. If the program running has one of these substrings in the name, we assume
         // this is a test harness.

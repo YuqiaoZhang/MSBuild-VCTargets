@@ -1,6 +1,7 @@
 ﻿namespace Microsoft.Build.CPPTasks
 {
     using Microsoft.Build.Shared;
+    using Microsoft.Build.Shared.Extension;
     using System;
     using System.Threading;
 
