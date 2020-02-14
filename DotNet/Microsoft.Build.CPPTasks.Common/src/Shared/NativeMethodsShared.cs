@@ -4,6 +4,8 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
+    using System.IO.Pipes;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Text;
@@ -41,12 +43,27 @@
         internal static int MAX_PATH = 260;
         private static readonly Version ThreadErrorModeMinOsVersion = new Version(6, 1, 0x1db0);
 
-#if true
-        [DllImport("ole32.dll")]
+#if false
         public static extern int CoWaitForMultipleHandles(COWAIT_FLAGS dwFlags, int dwTimeout, int cHandles, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] pHandles, out int pdwIndex);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern bool CreatePipe(out SafeFileHandle hReadPipe, out SafeFileHandle hWritePipe, SecurityAttributes lpPipeAttributes, int nSize);
+#endif
+        internal static bool CreatePipe(out AnonymousPipeServerStream hReadPipe, out AnonymousPipeServerStream hWritePipe, SecurityAttributes lpPipeAttributes, int nSize)
+        {
+            ErrorUtilities.VerifyThrow(
+                         (lpPipeAttributes != null) && lpPipeAttributes.bInheritHandle,
+                         "This method should only be passed Inheritable, but was passed {0} instead!",
+                         lpPipeAttributes
+                         );
+
+            AnonymousPipeServerStream fd = new AnonymousPipeServerStream(
+                PipeDirection.InOut,
+                (lpPipeAttributes == null) ? (HandleInheritability.None) : (lpPipeAttributes.bInheritHandle ? HandleInheritability.Inheritable : HandleInheritability.None), nSize);
+            hReadPipe = fd;
+            hWritePipe = fd;
+            return true;
+        }
+
+#if false
         internal static string FindOnPath(string filename)
         {
             StringBuilder buffer = new StringBuilder(MAX_PATH + 1);
@@ -73,11 +90,10 @@
             }
         }
 
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool FreeLibrary([In] IntPtr module);
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+
         internal static extern bool GetBinaryType([In] string lpApplicationName, out int pdwType);
+
         internal static List<KeyValuePair<int, SafeProcessHandle>> GetChildProcessIds(int parentProcessId, DateTime parentStartTime)
         {
             List<KeyValuePair<int, SafeProcessHandle>> list = new List<KeyValuePair<int, SafeProcessHandle>>();
@@ -120,15 +136,14 @@
             return ((GetCurrentDirectory(MAX_PATH, lpBuffer) <= 0) ? null : lpBuffer.ToString());
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int GetCurrentDirectory(int nBufferLength, [Out] StringBuilder lpBuffer);
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+
         internal static extern bool GetFileAttributesEx(string name, int fileInfoLevel, ref WIN32_FILE_ATTRIBUTE_DATA lpFileInformation);
-        [DllImport("kernel32.dll")]
+
         internal static extern uint GetFileType(IntPtr hFile);
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+
         internal static extern int GetFullPathName(string target, int bufferLength, [Out] StringBuilder buffer, IntPtr mustBeZero);
+        
         internal static bool GetLastWriteDirectoryUtcTime(string fullPath, out DateTime fileModifiedTimeUtc)
         {
             fileModifiedTimeUtc = DateTime.MinValue;
@@ -185,20 +200,20 @@
             return path;
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         internal static extern int GetLongPathName([In] string path, [Out] StringBuilder fullpath, [In] int length);
+
         internal static MemoryStatus GetMemoryStatus()
         {
             MemoryStatus lpBuffer = new MemoryStatus();
             return (GlobalMemoryStatusEx(lpBuffer) ? lpBuffer : null);
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int GetModuleFileName(HandleRef hModule, [Out] StringBuilder buffer, int length);
-        [DllImport("kernel32.dll", SetLastError = true)]
+
         internal static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
-        [DllImport("kernel32.dll")]
+
         internal static extern int GetOEMCP();
+
         internal static int GetParentProcessId(int processId)
         {
             int inheritedFromUniqueProcessId = 0;
@@ -222,10 +237,10 @@
             return inheritedFromUniqueProcessId;
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         internal static extern IntPtr GetProcAddress(IntPtr module, string procName);
-        [DllImport("mscoree.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+
         internal static extern uint GetRequestedRuntimeInfo(string pExe, string pwszVersion, string pConfigurationFile, uint startupFlags, uint runtimeInfoFlags, [Out] StringBuilder pDirectory, int dwDirectory, out uint dwDirectoryLength, [Out] StringBuilder pVersion, int cchBuffer, out uint dwlength);
+        
         internal static string GetShortFilePath(string path)
         {
             if (path != null)
@@ -250,15 +265,14 @@
             return path;
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         internal static extern int GetShortPathName(string path, [Out] StringBuilder fullpath, [In] int length);
-        [DllImport("kernel32.dll")]
+
         internal static extern IntPtr GetStdHandle(int nStdHandle);
-        [DllImport("kernel32.dll", SetLastError = true)]
+
         internal static extern void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        
         private static extern bool GlobalMemoryStatusEx([In, Out] MemoryStatus lpBuffer);
+        
         public static bool HResultFailed(int hr) =>
             (hr < 0);
 
@@ -309,8 +323,8 @@
             }
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern IntPtr LoadLibrary(string fileName);
+
         internal static bool MsgWaitOne(this WaitHandle handle) =>
             handle.MsgWaitOne(-1);
 
@@ -326,17 +340,27 @@
         internal static bool MsgWaitOne(this WaitHandle handle, TimeSpan timeout) =>
             handle.MsgWaitOne(((int)timeout.TotalMilliseconds));
 
-        [DllImport("NTDLL.DLL")]
         private static extern int NtQueryInformationProcess(SafeProcessHandle hProcess, PROCESSINFOCLASS pic, ref PROCESS_BASIC_INFORMATION pbi, int cb, ref int pSize);
-        [DllImport("KERNEL32.DLL")]
+
         private static extern SafeProcessHandle OpenProcess(eDesiredAccess dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern bool ReadFile(SafeFileHandle hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped);
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+#endif
+
+        internal static bool ReadFile(AnonymousPipeServerStream hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped)
+        {
+            ErrorUtilities.VerifyThrow(
+                                    lpOverlapped == NullIntPtr,
+                                    "This method should only be passed NullIntPtr, but was passed {0} instead!",
+                                    lpOverlapped
+                                    );
+            lpNumberOfBytesRead = (uint)hFile.Read(lpBuffer, 0, (int)nNumberOfBytesToRead);
+            return true;
+        }
+
+#if false
         private static extern uint SearchPath(string path, string fileName, string extension, int numBufferChars, [Out] StringBuilder buffer, int[] filePart);
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+
         internal static extern bool SetCurrentDirectory(string path);
+
         internal static int SetErrorMode(int newMode)
         {
             int num;
@@ -348,17 +372,16 @@
             return num;
         }
 
-        [DllImport("kernel32.dll", EntryPoint = "SetErrorMode", ExactSpelling = true)]
         private static extern int SetErrorMode_VistaAndOlder(int newMode);
-        [DllImport("kernel32.dll", EntryPoint = "SetThreadErrorMode", SetLastError = true)]
+
         private static extern bool SetErrorMode_Win7AndNewer(int newMode, out int oldMode);
+
         public static void ThrowExceptionForErrorCode(int errorCode)
         {
             errorCode = -2147024896 | errorCode;
             Marshal.ThrowExceptionForHR(errorCode);
         }
 
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern int WaitForMultipleObjects(uint handle, IntPtr[] handles, bool waitAll, uint milliseconds);
 #endif
 
@@ -447,17 +470,18 @@
             MaxProcessInfoClass
         }
 
+#if false
         internal class SafeProcessHandle : SafeHandleZeroOrMinusOneIsInvalid
         {
             private SafeProcessHandle() : base(true)
             {
             }
 
-            [DllImport("KERNEL32.DLL")]
             private static extern bool CloseHandle(IntPtr hObject);
             protected override bool ReleaseHandle() =>
                 CloseHandle(base.handle);
         }
+#endif
 
         [StructLayout(LayoutKind.Sequential)]
         internal class SecurityAttributes

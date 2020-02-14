@@ -19,6 +19,7 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading;
+    using System.IO.Pipes;
 
     public abstract class TrackedVCToolTask : VCToolTask
     {
@@ -39,8 +40,8 @@
         private ITaskItem[] excludedInputPaths;
         protected string pathToLog;
         private string pathOverride;
-        private SafeFileHandle unicodePipeReadHandle;
-        private SafeFileHandle unicodePipeWriteHandle;
+        private AnonymousPipeServerStream unicodePipeReadHandle;
+        private AnonymousPipeServerStream unicodePipeWriteHandle;
         private AutoResetEvent unicodeOutputEnded;
 
         protected TrackedVCToolTask(ResourceManager taskResources) : base(taskResources)
@@ -104,7 +105,7 @@
                     {
                         list.AddRange(base.EnvironmentVariables);
                     }
-                    list.Add("VS_UNICODE_OUTPUT=" + this.unicodePipeWriteHandle.DangerousGetHandle().ToString());
+                    list.Add("VS_UNICODE_OUTPUT=" + this.unicodePipeWriteHandle.GetClientHandleAsString());
                     base.EnvironmentVariables = list.ToArray();
                     this.unicodeOutputEnded = new AutoResetEvent(false);
                     ThreadPool.QueueUserWorkItem(new WaitCallback(this.ReadUnicodeOutput));

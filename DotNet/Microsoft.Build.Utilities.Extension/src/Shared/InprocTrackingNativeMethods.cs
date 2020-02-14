@@ -30,6 +30,8 @@ namespace Microsoft.Build.Shared
     /// </comments>
     internal static class InprocTrackingNativeMethods
     {
+#if false
+
 #region Delegates for the tracking functions
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -88,64 +90,85 @@ namespace Microsoft.Build.Shared
 
 #endregion // Delegates for the tracking functions
 
+#endif
+
 #region Public API
 
         internal static void StartTrackingContext([In, MarshalAs(UnmanagedType.LPWStr)] string intermediateDirectory, [In, MarshalAs(UnmanagedType.LPWStr)] string taskName)
         {
-            int hresult = FileTrackerDllStub.startTrackingContextDelegate(intermediateDirectory, taskName);
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("StartTrackingContext");
+
+            //int hresult = FileTrackerDllStub.startTrackingContextDelegate(intermediateDirectory, taskName);
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
-        internal static void StartTrackingContextWithRoot([In, MarshalAs(UnmanagedType.LPWStr)] string intermediateDirectory, [In, MarshalAs(UnmanagedType.LPWStr)] string taskName, [In, MarshalAs(UnmanagedType.LPWStr)] string rootMarker)
+        internal static void StartTrackingContextWithRoot(/*[In, MarshalAs(UnmanagedType.LPWStr)]*/ string intermediateDirectory, /*[In, MarshalAs(UnmanagedType.LPWStr)]*/ string taskName, /*[In, MarshalAs(UnmanagedType.LPWStr)]*/ string rootMarker)
         {
-            int hresult = FileTrackerDllStub.startTrackingContextWithRootDelegate(intermediateDirectory, taskName, rootMarker);
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("StartTrackingContextWithRoot");
+
+            //int hresult = FileTrackerDllStub.startTrackingContextWithRootDelegate(intermediateDirectory, taskName, rootMarker);
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void EndTrackingContext()
         {
-            int hresult = FileTrackerDllStub.endTrackingContextDelegate();
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("EndTrackingContext");
+
+            //int hresult = FileTrackerDllStub.endTrackingContextDelegate();
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void StopTrackingAndCleanup()
         {
-            int hresult = FileTrackerDllStub.stopTrackingAndCleanupDelegate();
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("StopTrackingAndCleanup");
+
+            //int hresult = FileTrackerDllStub.stopTrackingAndCleanupDelegate();
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void SuspendTracking()
         {
-            int hresult = FileTrackerDllStub.suspendTrackingDelegate();
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("SuspendTracking");
+
+            //int hresult = FileTrackerDllStub.suspendTrackingDelegate();
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void ResumeTracking()
         {
-            int hresult = FileTrackerDllStub.resumeTrackingDelegate();
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("ResumeTracking");
+
+            //int hresult = FileTrackerDllStub.resumeTrackingDelegate();
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void WriteAllTLogs([In, MarshalAs(UnmanagedType.LPWStr)] string intermediateDirectory, [In, MarshalAs(UnmanagedType.LPWStr)] string tlogRootName)
         {
-            int hresult = FileTrackerDllStub.writeAllTLogsDelegate(intermediateDirectory, tlogRootName);
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("WriteAllTLogs");
+
+            //int hresult = FileTrackerDllStub.writeAllTLogsDelegate(intermediateDirectory, tlogRootName);
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void WriteContextTLogs([In, MarshalAs(UnmanagedType.LPWStr)] string intermediateDirectory, [In, MarshalAs(UnmanagedType.LPWStr)] string tlogRootName)
         {
-            int hresult = FileTrackerDllStub.writeContextTLogsDelegate(intermediateDirectory, tlogRootName);
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("WriteContextTLogs");
+
+            //int hresult = FileTrackerDllStub.writeContextTLogsDelegate(intermediateDirectory, tlogRootName);
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
         internal static void SetThreadCount(int threadCount)
         {
-            int hresult = FileTrackerDllStub.setThreadCountDelegate(threadCount);
-            Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
+            throw new NotImplementedException("SetThreadCount");
+
+            //int hresult = FileTrackerDllStub.setThreadCountDelegate(threadCount);
+            //Marshal.ThrowExceptionForHR(hresult, new IntPtr(-1));
         }
 
-#endregion // Public API
+        #endregion // Public API
 
+#if false
         private static class FileTrackerDllStub
         {
             private readonly static Lazy<string> fileTrackerDllName = new Lazy<string>(() => (IntPtr.Size == sizeof(Int32)) ? "FileTracker32.dll" : "FileTracker64.dll");
@@ -154,7 +177,7 @@ namespace Microsoft.Build.Shared
             [SecurityCritical]
             private static SafeHandle s_fileTrackerDllHandle;
 
-#region Function pointers to native functions
+        #region Function pointers to native functions
 
             internal static StartTrackingContextDelegate startTrackingContextDelegate;
 
@@ -174,27 +197,25 @@ namespace Microsoft.Build.Shared
 
             internal static SetThreadCountDelegate setThreadCountDelegate;
 
-#endregion  // Function pointers to native functions
+        #endregion  // Function pointers to native functions
 
-#region Declarations of Windows API needed to load the native library
+        #region Declarations of Windows API needed to load the native library
 
-            [DllImport("kernel32.dll", CharSet = CharSet.Ansi, BestFitMapping = false)]
 #if FEATURE_RESOURCE_EXPOSURE
             [ResourceExposure(ResourceScope.Process)]
 #endif
             [SecurityCritical]
             private static extern IntPtr GetProcAddress(SafeHandle moduleHandle, String procName);
 
-            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 #if FEATURE_RESOURCE_EXPOSURE
             [ResourceExposure(ResourceScope.Machine)]
 #endif
             [SecurityCritical]
             private static extern SafeLibraryHandle LoadLibrary(String libPath);
 
-#endregion // Declarations of Windows API needed to load the native library
+        #endregion // Declarations of Windows API needed to load the native library
 
-#region Initialization code
+        #region Initialization code
 
             /// <summary>
             /// Loads FileTracker.dll into a handle that we can use subsequently to grab the exported methods we're interested in. 
@@ -270,7 +291,7 @@ namespace Microsoft.Build.Shared
                 InitDelegates();
             }
 
-#endregion  // Initialization code
+        #endregion  // Initialization code
 
             // Specialized handle to make sure we free FileTracker.dll 
             [SecurityCritical]
@@ -299,5 +320,6 @@ namespace Microsoft.Build.Shared
                 }
             }  // private class SafeLibraryHandle
         }
+#endif
     }
 }

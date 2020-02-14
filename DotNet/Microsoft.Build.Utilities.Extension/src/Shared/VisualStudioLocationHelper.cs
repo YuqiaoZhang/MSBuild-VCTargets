@@ -27,7 +27,7 @@ namespace Microsoft.Build.Shared
         {
             var validInstances = new List<VisualStudioInstance>();
 
-#if FEATURE_VISUALSTUDIOSETUP
+#if false
             try
             {
                 // This code is not obvious. See the sample (link above) for reference.
@@ -75,7 +75,7 @@ namespace Microsoft.Build.Shared
             return validInstances;
         }
 
-#if FEATURE_VISUALSTUDIOSETUP
+#if false
         private static ISetupConfiguration GetQuery()
         {
             try
@@ -99,7 +99,6 @@ namespace Microsoft.Build.Shared
             }
         }
 
-        [DllImport("Microsoft.VisualStudio.Setup.Configuration.Native.dll", ExactSpelling = true, PreserveSig = true)]
         private static extern int GetSetupConfiguration(
             [MarshalAs(UnmanagedType.Interface), Out] out ISetupConfiguration configuration,
             IntPtr reserved);

@@ -16,7 +16,7 @@
     public abstract class VCToolTask : ToolTask
     {
         private Dictionary<string, ToolSwitch> activeToolSwitchesValues;
-        private Semaphore cancelEvent;
+        private EventWaitHandle cancelEvent;
         private string cancelEventName;
         private Dictionary<string, ToolSwitch> activeToolSwitches;
         private Dictionary<string, Dictionary<string, string>> values;

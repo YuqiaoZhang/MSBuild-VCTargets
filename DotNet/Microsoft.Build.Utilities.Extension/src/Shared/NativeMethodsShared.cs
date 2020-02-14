@@ -189,7 +189,7 @@ namespace Microsoft.Build.Shared
         #endregion
 
         #region Structs
-
+#if false
         /// <summary>
         /// Structure that contain information about the system on which we are running
         /// </summary>
@@ -465,9 +465,12 @@ namespace Microsoft.Build.Shared
             }
         }
 
+#endif
+
         #endregion
 
         #region Member data
+
 
         /// <summary>
         /// Gets an enum for the max path limit of the current OS.
@@ -528,18 +531,17 @@ namespace Microsoft.Build.Shared
         }
 
         /// <summary>
-        /// Cached value for IsUnixLike (this method is called frequently during evaluation).
-        /// </summary>
-        private static readonly bool s_isUnixLike = IsLinux || IsOSX || IsBSD;
-
-        /// <summary>
         /// Gets a flag indicating if we are running under a Unix-like system (Mac, Linux, etc.)
         /// </summary>
         internal static bool IsUnixLike
         {
-            get { return s_isUnixLike; }
+            get
+            {
+                return !IsWindows;
+            }
         }
 
+#if false
         /// <summary>
         /// Gets a flag indicating if we are running under Linux
         /// </summary>
@@ -569,6 +571,8 @@ namespace Microsoft.Build.Shared
 #endif
         }
 
+#endif
+
         private static readonly object IsMonoLock = new object();
 
         private static bool? _isMono;
@@ -597,18 +601,13 @@ namespace Microsoft.Build.Shared
             }
         }
 
-#if !CLR2COMPATIBILITY
         private static bool? _isWindows;
-#endif
 
         /// <summary>
         /// Gets a flag indicating if we are running under some version of Windows
         /// </summary>
         internal static bool IsWindows
         {
-#if CLR2COMPATIBILITY
-            get { return true; }
-#else
             get
             {
                 if (_isWindows == null)
@@ -617,8 +616,9 @@ namespace Microsoft.Build.Shared
                 }
                 return _isWindows.Value;
             }
-#endif
         }
+
+#if false
 
 #if MONO
         private static bool? _isOSX;
@@ -662,6 +662,7 @@ namespace Microsoft.Build.Shared
         {
             return IsOSX ? "osx" : IsUnixLike ? "unix" : "windows";
         }
+#endif
 
         /// <summary>
         /// The base directory for all framework paths in Mono
@@ -715,6 +716,7 @@ namespace Microsoft.Build.Shared
             }
         }
 
+#if false
         /// <summary>
         /// System information, initialized when required.
         /// </summary>
@@ -755,9 +757,12 @@ namespace Microsoft.Build.Shared
         /// </summary>
         internal static ProcessorArchitectures ProcessorArchitectureNative => SystemInformation.ProcessorArchitectureTypeNative;
 
-        #endregion
+#endif
 
-        #region Set Error Mode (copied from BCL)
+#endregion
+
+#if false
+#region Set Error Mode (copied from BCL)
 
         private static readonly Version s_threadErrorModeMinOsVersion = new Version(6, 1, 0x1db0);
 
@@ -774,34 +779,26 @@ namespace Microsoft.Build.Shared
             return num;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", EntryPoint = "SetThreadErrorMode", SetLastError = true)]
         private static extern bool SetErrorMode_Win7AndNewer(int newMode, out int oldMode);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", EntryPoint = "SetErrorMode", ExactSpelling = true)]
         private static extern int SetErrorMode_VistaAndOlder(int newMode);
 
-        #endregion
+#endregion
+#endif
 
-        #region Wrapper methods
-
+#region Wrapper methods
+#if false
         /// <summary>
         /// Really truly non pumping wait.
         /// Raw IntPtrs have to be used, because the marshaller does not support arrays of SafeHandle, only
         /// single SafeHandles.
         /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern Int32 WaitForMultipleObjects(uint handle, IntPtr[] handles, bool waitAll, uint milliseconds);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern void GetSystemInfo(ref SYSTEM_INFO lpSystemInfo);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern void GetNativeSystemInfo(ref SYSTEM_INFO lpSystemInfo);
+#endif
 
         /// <summary>
         /// Get the last write time of the fullpath to a directory. If the pointed path is not a directory, or
@@ -811,6 +808,7 @@ namespace Microsoft.Build.Shared
         /// <param name="fileModifiedTimeUtc">The UTC last write time for the directory</param>
         internal static bool GetLastWriteDirectoryUtcTime(string fullPath, out DateTime fileModifiedTimeUtc)
         {
+#if false
             // This code was copied from the reference manager, if there is a bug fix in that code, see if the same fix should also be made
             // there
             if (IsWindows)
@@ -837,12 +835,13 @@ namespace Microsoft.Build.Shared
 
                 return success;
             }
-
+#endif
             DateTime lastWriteTime = Directory.GetLastWriteTimeUtc(fullPath);
             bool directoryExists = lastWriteTime != minFileDate;
 
             fileModifiedTimeUtc = directoryExists ? lastWriteTime : DateTime.MinValue;
             return directoryExists;
+
         }
 
         /// <summary>
@@ -850,6 +849,9 @@ namespace Microsoft.Build.Shared
         /// </summary>
         internal static string GetShortFilePath(string path)
         {
+            return path;
+
+#if false
             if (!IsWindows)
             {
                 return path;
@@ -880,6 +882,7 @@ namespace Microsoft.Build.Shared
             }
 
             return path;
+#endif
         }
 
         /// <summary>
@@ -889,6 +892,9 @@ namespace Microsoft.Build.Shared
         /// <returns></returns>
         internal static string GetLongFilePath(string path)
         {
+            return path;
+
+#if false
             if (IsUnixLike)
             {
                 return path;
@@ -919,8 +925,10 @@ namespace Microsoft.Build.Shared
             }
 
             return path;
+#endif
         }
 
+#if false
         /// <summary>
         /// Retrieves the current global memory status.
         /// </summary>
@@ -940,6 +948,7 @@ namespace Microsoft.Build.Shared
 
             return null;
         }
+#endif
 
         /// <summary>
         /// Get the last write time of the fullpath to the file.
@@ -954,7 +963,7 @@ namespace Microsoft.Build.Shared
         internal static DateTime GetLastWriteFileUtcTime(string fullPath)
         {
             DateTime fileModifiedTime = DateTime.MinValue;
-
+#if false
             if (IsWindows)
             {
                 if (Traits.Instance.EscapeHatches.AlwaysUseContentTimestamp)
@@ -980,6 +989,7 @@ namespace Microsoft.Build.Shared
                 }
             }
             else
+#endif
             {
                 DateTime lastWriteTime = File.GetLastWriteTimeUtc(fullPath);
                 bool fileExists = lastWriteTime != minFileDate;
@@ -988,8 +998,10 @@ namespace Microsoft.Build.Shared
             }
 
             return fileModifiedTime;
+
         }
 
+#if false
         /// <summary>
         /// Get the last write time of the content pointed to by a file path.
         /// </summary>
@@ -1258,6 +1270,7 @@ namespace Microsoft.Build.Shared
 
             return myChildren;
         }
+#endif
 
         /// <summary>
         /// Internal, optimized GetCurrentDirectory implementation that simply delegates to the native method
@@ -1265,7 +1278,7 @@ namespace Microsoft.Build.Shared
         /// <returns></returns>
         internal unsafe static string GetCurrentDirectory()
         {
-#if FEATURE_LEGACY_GETCURRENTDIRECTORY
+#if false
             if (IsWindows)
             {
                 int bufferSize = GetCurrentDirectoryWin32(0, null);
@@ -1277,6 +1290,7 @@ namespace Microsoft.Build.Shared
             return Directory.GetCurrentDirectory();
         }
 
+#if false
         private unsafe static int GetCurrentDirectoryWin32(int nBufferLength, char* lpBuffer)
         {
             int pathLength = GetCurrentDirectory(nBufferLength, lpBuffer);
@@ -1334,9 +1348,11 @@ namespace Microsoft.Build.Shared
                 ThrowExceptionForErrorCode(code);
             }
         }
+#endif
 
         #endregion
 
+#if false
         #region PInvoke
 
         /// <summary>
@@ -1345,17 +1361,10 @@ namespace Microsoft.Build.Shared
         /// Basically for each ANSI code page (set in Regional settings) there's a corresponding OEM code page
         /// that needs to be used for instance when writing to batch files
         /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport(kernel32Dll)]
         internal static extern int GetOEMCP();
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetFileAttributesEx(String name, int fileInfoLevel, ref WIN32_FILE_ATTRIBUTE_DATA lpFileInformation);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport(kernel32Dll, SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern uint SearchPath
         (
             string path,
@@ -1366,21 +1375,12 @@ namespace Microsoft.Build.Shared
             int[] filePart
         );
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", PreserveSig = true, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool FreeLibrary([In] IntPtr module);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", PreserveSig = true, BestFitMapping = false, ThrowOnUnmappableChar = true, CharSet = CharSet.Ansi, SetLastError = true)]
         internal static extern IntPtr GetProcAddress(IntPtr module, string procName);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr LoadLibrary(string fileName);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport(mscoreeDLL, SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern uint GetRequestedRuntimeInfo(String pExe,
                                                 String pwszVersion,
                                                 String pConfigurationFile,
@@ -1396,8 +1396,6 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// Gets the fully qualified filename of the currently executing .exe
         /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport(kernel32Dll, SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern int GetModuleFileName(
 #if FEATURE_HANDLEREF
             HandleRef hModule,
@@ -1406,23 +1404,12 @@ namespace Microsoft.Build.Shared
 #endif
             [Out] StringBuilder buffer, int length);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll")]
         internal static extern IntPtr GetStdHandle(int nStdHandle);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll")]
         internal static extern uint GetFileType(IntPtr hFile);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [SuppressMessage("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api", Justification = "Using unmanaged equivalent for performance reasons")]
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         internal unsafe static extern int GetCurrentDirectory(int nBufferLength, char* lpBuffer);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [SuppressMessage("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api", Justification = "Using unmanaged equivalent for performance reasons")]
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SetCurrentDirectory")]
-        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetCurrentDirectoryWindows(string path);
 
         internal static bool SetCurrentDirectory(string path)
@@ -1443,37 +1430,20 @@ namespace Microsoft.Build.Shared
             return true;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         internal static unsafe extern int GetFullPathName(string target, int bufferLength, char* buffer, IntPtr mustBeZero);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("KERNEL32.DLL")]
         private static extern SafeProcessHandle OpenProcess(eDesiredAccess dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("NTDLL.DLL")]
         private static extern int NtQueryInformationProcess(SafeProcessHandle hProcess, PROCESSINFOCLASS pic, ref PROCESS_BASIC_INFORMATION pbi, int cb, ref int pSize);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = AutoOrUnicode, SetLastError = true)]
         private static extern bool GlobalMemoryStatusEx([In, Out] MemoryStatus lpBuffer);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, BestFitMapping = false)]
         internal static extern int GetShortPathName(string path, [Out] StringBuilder fullpath, [In] int length);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, BestFitMapping = false)]
         internal static extern int GetLongPathName([In] string path, [Out] StringBuilder fullpath, [In] int length);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", CharSet = AutoOrUnicode, SetLastError = true)]
         internal static extern bool CreatePipe(out SafeFileHandle hReadPipe, out SafeFileHandle hWritePipe, SecurityAttributes lpPipeAttributes, int nSize);
 
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("kernel32.dll", CharSet = AutoOrUnicode, SetLastError = true)]
         internal static extern bool ReadFile(SafeFileHandle hFile, byte[] lpBuffer, uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped);
 
         /// <summary>
@@ -1481,8 +1451,6 @@ namespace Microsoft.Build.Shared
         /// VS needs this in order to allow the in-proc compilers to properly initialize, since they will make calls from the
         /// build thread which the main thread (blocked on BuildSubmission.Execute) must service.
         /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass", Justification = "Class name is NativeMethodsShared for increased clarity")]
-        [DllImport("ole32.dll")]
         public static extern int CoWaitForMultipleHandles(COWAIT_FLAGS dwFlags, int dwTimeout, int cHandles, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] pHandles, out int pdwIndex);
 
         internal const uint GENERIC_READ = 0x80000000;
@@ -1491,8 +1459,6 @@ namespace Microsoft.Build.Shared
         internal const uint FILE_FLAG_OPEN_REPARSE_POINT = 0x00200000;
         internal const uint OPEN_EXISTING = 3;
 
-        [DllImport("kernel32.dll", CharSet = AutoOrUnicode, CallingConvention = CallingConvention.StdCall,
-            SetLastError = true)]
         internal static extern SafeFileHandle CreateFile(
             string lpFileName,
             uint dwDesiredAccess,
@@ -1503,7 +1469,6 @@ namespace Microsoft.Build.Shared
             IntPtr hTemplateFile
             );
 
-        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool GetFileTime(
             SafeFileHandle hFile,
             out FILETIME lpCreationTime,
@@ -1511,7 +1476,6 @@ namespace Microsoft.Build.Shared
             out FILETIME lpLastWriteTime
             );
 
-        [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
 
         internal static extern bool CloseHandle(IntPtr hObject);
@@ -1610,5 +1574,7 @@ namespace Microsoft.Build.Shared
         }
 
         #endregion
+#endif
+
     }
 }
