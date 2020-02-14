@@ -5,19 +5,19 @@
 
     internal static class AssemblyResources
     {
-        private static readonly ResourceManager resources = Microsoft.Build.CPPTasks.Common.Strings.ResourceManager;
-        private static readonly ResourceManager sharedResources = Microsoft.Build.CPPTasks.Common.Strings.ResourceManager;
+        internal static ResourceManager resources = CPPTasks.Common.Strings.ResourceManager;
+        internal static ResourceManager sharedResources = CPPTasks.Common.Strings.ResourceManager;
 
         internal static string FormatResourceString(string resourceName, params object[] args)
         {
-            Microsoft.Build.Shared.ErrorUtilities.VerifyThrowArgumentNull(resourceName, "resourceName");
+            ErrorUtilities.VerifyThrowArgumentNull(resourceName, "resourceName");
             return FormatString(GetString(resourceName), args);
         }
 
         internal static string FormatString(string unformatted, params object[] args)
         {
-            Microsoft.Build.Shared.ErrorUtilities.VerifyThrowArgumentNull(unformatted, "unformatted");
-            return Microsoft.Build.Shared.ResourceUtilities.FormatString(unformatted, args);
+            ErrorUtilities.VerifyThrowArgumentNull(unformatted, "unformatted");
+            return ResourceUtilities.FormatString(unformatted, args);
         }
 
         internal static string GetString(string name)

@@ -14,7 +14,7 @@
         private string target;
         private string outputEnvironmentVariable;
 
-        public SetEnv() : base(Microsoft.Build.CPPTasks.Common.Strings.ResourceManager)
+        public SetEnv() : base(Common.Strings.ResourceManager)
         {
             this.val = string.Empty;
             this.target = "Process";

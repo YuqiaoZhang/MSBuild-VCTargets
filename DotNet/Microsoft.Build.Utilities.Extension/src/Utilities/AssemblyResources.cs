@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Resources;
-using System.Reflection;
 using System.Globalization;
 
 namespace Microsoft.Build.Shared
@@ -33,14 +32,14 @@ namespace Microsoft.Build.Shared
         /// </summary>
         /// <remarks>This property is thread-safe.</remarks>
         /// <value>ResourceManager for primary resources.</value>
-        internal static ResourceManager PrimaryResources { get; } = new ResourceManager("Microsoft.Build.Utilities.Core.Strings", typeof(AssemblyResources).GetTypeInfo().Assembly);
+        internal static ResourceManager PrimaryResources { get; } = Utilities.Extension.Strings.ResourceManager;
 
         /// <summary>
         /// Gets the assembly's shared resources i.e. the resources this assembly shares with other assemblies.
         /// </summary>
         /// <remarks>This property is thread-safe.</remarks>
         /// <value>ResourceManager for shared resources.</value>
-        internal static ResourceManager SharedResources { get; } = new ResourceManager("Microsoft.Build.Utilities.Core.Strings.shared", typeof(AssemblyResources).GetTypeInfo().Assembly);
+        internal static ResourceManager SharedResources { get; } = Utilities.Extension.Strings_shared.ResourceManager;
 
         /// <summary>
         /// Formats the given string using the variable arguments passed in. The current thread's culture is used for formatting.

@@ -12,7 +12,7 @@
         private string _importance;
         private string arguments;
 
-        public VCMessage() : base(Microsoft.Build.CPPTasks.Common.Strings.ResourceManager)
+        public VCMessage() : base(Common.Strings.ResourceManager)
         {
         }
 
