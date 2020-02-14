@@ -19,13 +19,9 @@
                                      "This method should only be passed IntPtr.Zero, but was passed {0} instead!",
                                      lpEventAttributes
                                      );
-
-            return CreateEventW(bManualReset, bInitialState, lpName);
-        }
-
-        internal static EventWaitHandle CreateEventW(bool bManualReset, bool bInitialState, string lpName)
-        {
-            return new EventWaitHandle(bInitialState, (!bManualReset) ? EventResetMode.AutoReset : EventResetMode.ManualReset, lpName);
+            //FiX me:
+            //UNIX not support named event
+            return new EventWaitHandle(bInitialState, (!bManualReset) ? EventResetMode.AutoReset : EventResetMode.ManualReset, null);
         }
 
 #if false
