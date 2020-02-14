@@ -702,43 +702,22 @@
 
         protected int TrackerExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
-            string dllName = null;
-            string path = null;
-            bool trackFileAccess = this.TrackFileAccess;
             string filePath = Environment.ExpandEnvironmentVariables(pathToTool);
-            string str6 = responseFileCommands;
             string arguments = Environment.ExpandEnvironmentVariables(commandLineCommands);
+            string tmpFilePath = null;
             try
             {
                 string trackerPath;
-                ExecutableType sameAsCurrentProcess;
+                string dllName = null;
                 this.pathToLog = filePath;
-                
-                if(trackFileAccess)
-                {
-                    bool flag2;
-                    sameAsCurrentProcess = ExecutableType.SameAsCurrentProcess;
-                    if (string.IsNullOrEmpty(this.ToolArchitecture))
-                    {
-                        if (this.ToolType != null)
-                        {
-                            sameAsCurrentProcess = this.ToolType.Value;
-                        }
-                    }
-                    else if (!Enum.TryParse<ExecutableType>(this.ToolArchitecture, out sameAsCurrentProcess))
-                    {
-                        object[] messageArgs = new object[] { "ToolArchitecture", base.GetType().Name };
-                        base.Log.LogErrorWithCodeFromResources("General.InvalidValue", messageArgs);
-                        return -1;
-                    }
-                    if (((sameAsCurrentProcess == ExecutableType.Native32Bit) || (sameAsCurrentProcess == ExecutableType.Native64Bit)) && Microsoft.Build.Shared.NativeMethodsShared.Is64bitApplication(filePath, out flag2))
-                    {
-                        sameAsCurrentProcess = flag2 ? ExecutableType.Native64Bit : ExecutableType.Native32Bit;
-                    }
 
+                bool trackFileAccess = this.TrackFileAccess;
+
+                if (trackFileAccess)
+                {
                     try
                     {
-                        trackerPath = FileTracker.GetTrackerPath(sameAsCurrentProcess, this.TrackerSdkPath);
+                        trackerPath = FileTracker.GetTrackerPath(this.TrackerSdkPath);
                         if (trackerPath == null)
                         {
                             object[] messageArgs = new object[] { "tracker.exe" };
@@ -758,7 +737,7 @@
 
                     try
                     {
-                        dllName = FileTracker.GetFileTrackerPath(sameAsCurrentProcess, this.TrackerFrameworkPath);
+                        dllName = FileTracker.GetFileTrackerPath(this.TrackerFrameworkPath);
                     }
                     catch (Exception exception3)
                     {
@@ -782,33 +761,39 @@
                 }
 
                 {
-                    string str;
-                    Microsoft.Build.Shared.ErrorUtilities.VerifyThrowInternalRooted(trackerPath);
+                    ErrorUtilities.VerifyThrowInternalRooted(trackerPath);
+
+                    string trackerArguments;
+               
                     if (trackFileAccess)
                     {
-                        string str8 = FileTracker.TrackerArguments(filePath, arguments, dllName, this.TrackerIntermediateDirectory, this.RootSource, base.CancelEventName);
-                        base.Log.LogMessageFromResources(MessageImportance.Low, "Native_TrackingCommandMessage", new object[0]);
-                        base.Log.LogMessage(MessageImportance.Low, trackerPath + (this.AttributeFileTracking ? " /a " : " ") + (this.TrackReplaceFile ? "/f " : "") + str8 + " " + str6, new object[0]);
-                        path = Microsoft.Build.Shared.FileUtilities.GetTemporaryFile();
-                        using (StreamWriter writer = new StreamWriter(path, false, Encoding.Unicode))
+                        string strrsp = FileTracker.TrackerResponseFileArguments(dllName, this.TrackerIntermediateDirectory, this.RootSource, base.CancelEventName);
+                        string strcmd = FileTracker.TrackerCommandArguments(filePath, arguments);
+                
+                        base.Log.LogMessageFromResources(MessageImportance.Low, "Native_TrackingCommandMessage");
+                        base.Log.LogMessage(MessageImportance.Low, trackerPath + (this.AttributeFileTracking ? " /a " : " ") + (this.TrackReplaceFile ? "/f " : "") + (strrsp + strcmd) + " " + responseFileCommands);
+
+                        tmpFilePath = FileUtilities.GetTemporaryFile();
+                        using (StreamWriter writer = new StreamWriter(tmpFilePath, false, Encoding.Unicode))
                         {
-                            writer.Write(FileTracker.TrackerResponseFileArguments(dllName, this.TrackerIntermediateDirectory, this.RootSource, base.CancelEventName));
+                            writer.Write(strrsp);
                         }
-                        str = (this.AttributeFileTracking ? "/a @\"" : "@\"") + path + "\"" + (this.TrackReplaceFile ? " /f " : "") + FileTracker.TrackerCommandArguments(filePath, arguments);
+
+                        trackerArguments = (this.AttributeFileTracking ? "/a @\"" : "@\"") + tmpFilePath + "\"" + (this.TrackReplaceFile ? " /f " : "") + strcmd;
                     }
                     else
                     {
-                        str = arguments;
+                        trackerArguments = arguments;
                     }
 
-                    return base.ExecuteTool(trackerPath, str6, str);
+                    return base.ExecuteTool(trackerPath, responseFileCommands, trackerArguments);
                 }           
             }
             finally
             {
-                if (path != null)
+                if (tmpFilePath != null)
                 {
-                    base.DeleteTempFile(path);
+                    base.DeleteTempFile(tmpFilePath);
                 }
             }
         }
@@ -1055,7 +1040,11 @@
 
         public string TrackerFrameworkPath { get; set; }
 
-        public string TrackerSdkPath { get; set; }
+        public string TrackerSdkPath
+        {
+            get;
+            set;
+        }
 
         public ITaskItem[] ExcludedInputPaths
         {

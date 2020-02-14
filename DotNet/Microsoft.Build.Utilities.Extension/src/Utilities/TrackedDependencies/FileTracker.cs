@@ -446,19 +446,29 @@ namespace Microsoft.Build.Utilities.Extension
         /// </summary>
         /// <param name="toolType">The <see cref="ExecutableType"/> of the tool being wrapped</param>
         /// <param name="rootPath">The root path for Tracker.exe.  Overrides the toolType if specified.</param>
-        public static string GetTrackerPath(ExecutableType toolType, string rootPath) //=> GetPath(s_TrackerFilename, toolType, rootPath);
-        {
-            string trackerPath = Environment.GetEnvironmentVariable("MSBUILD_TRACK_PATH");
+        public static string GetTrackerPath(ExecutableType toolType, string rootPath) => GetTrackerPath(rootPath); //=> GetPath(s_TrackerFilename, toolType, rootPath);
 
-            if (!string.IsNullOrEmpty(trackerPath))
+        /// <summary>
+        /// Given the ExecutableType of the tool being wrapped and information that we 
+        /// know about our current bitness, figures out and returns the path to the correct
+        /// Tracker.exe. 
+        /// </summary>
+        /// <param name="rootPath">The root path for Tracker.exe.</param>
+        public static string GetTrackerPath(string rootPath)
+        {
+            string trackerSDKPath = Environment.GetEnvironmentVariable("MSBUILD_TRACKSDK_PATH");
+
+            if (!string.IsNullOrEmpty(trackerSDKPath))
             {
-                if (!FileSystems.Default.FileExists(trackerPath))
+                string path = Path.Combine(trackerSDKPath, s_TrackerFilename);
+
+                if (FileSystems.Default.FileExists(path))
                 {
-                    trackerPath = null;
+                    return path;
                 }
             }
 
-            return trackerPath;
+            return GetPath(s_TrackerFilename, rootPath);
         }
 
         /// <summary>
@@ -476,63 +486,38 @@ namespace Microsoft.Build.Utilities.Extension
         /// </summary>
         /// <param name="toolType">The <see cref="ExecutableType"/> of the tool being wrapped</param>
         /// <param name="rootPath">The root path for FileTracker.dll.  Overrides the toolType if specified.</param>
-        public static string GetFileTrackerPath(ExecutableType toolType, string rootPath) //=> GetPath(s_FileTrackerFilename, toolType, rootPath);
-        {
-            string trackerPath = Environment.GetEnvironmentVariable("MSBUILD_FILETRACK_PATH");
+        public static string GetFileTrackerPath(ExecutableType toolType, string rootPath) => GetFileTrackerPath(rootPath); //=> GetPath(s_FileTrackerFilename, toolType, rootPath);
 
-            if (!string.IsNullOrEmpty(trackerPath))
+        /// <summary>
+        /// Given the ExecutableType of the tool being wrapped and information that we 
+        /// know about our current bitness, figures out and returns the path to the correct
+        /// FileTracker.dll. 
+        /// </summary>
+        /// <param name="rootPath">The root path for the file.</param>
+        public static string GetFileTrackerPath(string rootPath)
+        {
+            string trackerSDKPath = Environment.GetEnvironmentVariable("MSBUILD_TRACKFRAMEWORK_PATH");
+
+            if (!string.IsNullOrEmpty(trackerSDKPath))
             {
-                if (!FileSystems.Default.FileExists(trackerPath))
+                string path = Path.Combine(trackerSDKPath, s_FileTrackerFilename);
+
+                if (FileSystems.Default.FileExists(path))
                 {
-                    trackerPath = null;
+                    return path;
                 }
             }
 
-            return trackerPath;
+            return GetPath(s_FileTrackerFilename, rootPath);
         }
 
-#if false
         /// <summary>
         /// Given a filename (only really meant to support either Tracker.exe or FileTracker.dll), returns
         /// the appropriate path for the appropriate file type. 
         /// </summary>
         /// <param name="filename"></param>
-        /// <param name="toolType"></param>
-        /// <param name="rootPath">The root path for the file.  Overrides the toolType if specified.</param>
-        private static string GetPath(string filename, ExecutableType toolType, string rootPath)
-        {
-            string trackerPath;
-
-            if (!string.IsNullOrEmpty(rootPath))
-            {
-                trackerPath = Path.Combine(rootPath, filename);
-
-                if (!FileSystems.Default.FileExists(trackerPath))
-                {
-                    // if an override path was specified, that's it -- we don't want to fall back if the file
-                    // is not found there.
-                    trackerPath = null;
-                }
-            }
-            else
-            {
-                // Since Detours can handle cross-bitness process launches, the toolType
-                // can be ignored; just return the path corresponding to the current architecture.
-                trackerPath = GetPath(filename, DotNetFrameworkArchitecture.Current);
-            }
-
-            return trackerPath;
-        }
-#endif
-
-        /// <summary>
-        /// Given a filename (currently only Tracker.exe and FileTracker.dll are supported), return 
-        /// the path to that file. 
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="bitness"></param>
-        /// <returns></returns>
-        private static string GetPath(string filename, DotNetFrameworkArchitecture bitness)
+        /// <param name="rootPath">The root path for the file.</param>
+        private static string GetPath(string filename, string rootPath)
         {
             // Make sure that if someone starts passing the wrong thing to this method we don't silently 
             // eat it and do something possibly unexpected. 
@@ -543,26 +528,17 @@ namespace Microsoft.Build.Utilities.Extension
                                        filename
                                        );
 
-            // Look for FileTracker.dll/Tracker.exe in the MSBuild tools directory. They may exist elsewhere on disk,
-            // but other copies aren't guaranteed to be compatible with the latest.
-            var path = ToolLocationHelper.GetPathToBuildToolsFile(filename, ToolLocationHelper.CurrentToolsVersion, bitness);
-
-            // Due to a Detours limitation, the path to FileTracker32.dll must be
-            // representable in ANSI characters. Look for it first in the global
-            // shared location which is guaranteed to be ANSI. Fall back to
-            // current folder.
-            if (s_FileTrackerFilename.Equals(filename, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(rootPath))
             {
-                string progfilesPath = Path.Combine(FrameworkLocationHelper.GenerateProgramFiles32(),
-                    "MSBuild", MSBuildConstants.CurrentProductVersion, "FileTracker", s_FileTrackerFilename);
+                string path = Path.Combine(rootPath, filename);
 
-                if (FileSystems.Default.FileExists(progfilesPath))
+                if (FileSystems.Default.FileExists(path))
                 {
-                    return progfilesPath;
+                    return path;
                 }
             }
 
-            return path;
+            return null;
         }
 
         /// <summary>

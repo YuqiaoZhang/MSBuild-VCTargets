@@ -41,8 +41,10 @@
         internal static int MAX_PATH = 260;
         private static readonly Version ThreadErrorModeMinOsVersion = new Version(6, 1, 0x1db0);
 
+#if true
         [DllImport("ole32.dll")]
         public static extern int CoWaitForMultipleHandles(COWAIT_FLAGS dwFlags, int dwTimeout, int cHandles, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] pHandles, out int pdwIndex);
+
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern bool CreatePipe(out SafeFileHandle hReadPipe, out SafeFileHandle hWritePipe, SecurityAttributes lpPipeAttributes, int nSize);
         internal static string FindOnPath(string filename)
@@ -358,6 +360,7 @@
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
         public static extern int WaitForMultipleObjects(uint handle, IntPtr[] handles, bool waitAll, uint milliseconds);
+#endif
 
         [Flags]
         public enum COWAIT_FLAGS

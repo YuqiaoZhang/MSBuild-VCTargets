@@ -9,15 +9,14 @@
     using System.Globalization;
     using System.IO;
     using System.Resources;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Threading;
 
     public abstract class VCToolTask : ToolTask
     {
         private Dictionary<string, ToolSwitch> activeToolSwitchesValues;
-        private IntPtr cancelEvent;
+        private Semaphore cancelEvent;
         private string cancelEventName;
         private Dictionary<string, ToolSwitch> activeToolSwitches;
         private Dictionary<string, Dictionary<string, string>> values;
