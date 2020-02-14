@@ -5,6 +5,6 @@ Microsoft.Build.CPPTasks.Common/Properties
 Microsoft.Build.Utilities.Extension/bin
 Microsoft.Build.Utilities.Extension/obj
 Microsoft.Build.Utilities.Extension/Properties
-TrackerSDK/bin
-TrackerSDK/obj
-TrackerSDK/Properties
+Microsoft.Build.CPPTasks.Android/bin
+Microsoft.Build.CPPTasks.Android/obj
+Microsoft.Build.CPPTasks.Android/Properties
