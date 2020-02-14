@@ -446,7 +446,20 @@ namespace Microsoft.Build.Utilities.Extension
         /// </summary>
         /// <param name="toolType">The <see cref="ExecutableType"/> of the tool being wrapped</param>
         /// <param name="rootPath">The root path for Tracker.exe.  Overrides the toolType if specified.</param>
-        public static string GetTrackerPath(ExecutableType toolType, string rootPath) => GetPath(s_TrackerFilename, toolType, rootPath);
+        public static string GetTrackerPath(ExecutableType toolType, string rootPath) //=> GetPath(s_TrackerFilename, toolType, rootPath);
+        {
+            string trackerPath = Environment.GetEnvironmentVariable("MSBUILD_TRACK_PATH");
+
+            if (!string.IsNullOrEmpty(trackerPath))
+            {
+                if (!FileSystems.Default.FileExists(trackerPath))
+                {
+                    trackerPath = null;
+                }
+            }
+
+            return trackerPath;
+        }
 
         /// <summary>
         /// Given the ExecutableType of the tool being wrapped and information that we 
@@ -463,8 +476,22 @@ namespace Microsoft.Build.Utilities.Extension
         /// </summary>
         /// <param name="toolType">The <see cref="ExecutableType"/> of the tool being wrapped</param>
         /// <param name="rootPath">The root path for FileTracker.dll.  Overrides the toolType if specified.</param>
-        public static string GetFileTrackerPath(ExecutableType toolType, string rootPath) => GetPath(s_FileTrackerFilename, toolType, rootPath);
+        public static string GetFileTrackerPath(ExecutableType toolType, string rootPath) //=> GetPath(s_FileTrackerFilename, toolType, rootPath);
+        {
+            string trackerPath = Environment.GetEnvironmentVariable("MSBUILD_FILETRACK_PATH");
 
+            if (!string.IsNullOrEmpty(trackerPath))
+            {
+                if (!FileSystems.Default.FileExists(trackerPath))
+                {
+                    trackerPath = null;
+                }
+            }
+
+            return trackerPath;
+        }
+
+#if false
         /// <summary>
         /// Given a filename (only really meant to support either Tracker.exe or FileTracker.dll), returns
         /// the appropriate path for the appropriate file type. 
@@ -496,6 +523,7 @@ namespace Microsoft.Build.Utilities.Extension
 
             return trackerPath;
         }
+#endif
 
         /// <summary>
         /// Given a filename (currently only Tracker.exe and FileTracker.dll are supported), return 
