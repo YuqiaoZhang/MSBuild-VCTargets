@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.CPPTasks.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Utilities.Extension", "Microsoft.Build.Utilities.Extension\Microsoft.Build.Utilities.Extension.csproj", "{6A453484-7F8C-430B-AE21-50C0B3C7B954}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracker", "TrackerSDK\Tracker.csproj", "{B603D7EF-63F3-4F5A-A6D8-FB2705941A2D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A453484-7F8C-430B-AE21-50C0B3C7B954}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B603D7EF-63F3-4F5A-A6D8-FB2705941A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B603D7EF-63F3-4F5A-A6D8-FB2705941A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B603D7EF-63F3-4F5A-A6D8-FB2705941A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B603D7EF-63F3-4F5A-A6D8-FB2705941A2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
