@@ -71,73 +71,66 @@
             this.switchOrderList.Add("BuildingInIde");
         }
 
-        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+        protected override int ExecuteTool(
+            string pathToTool, 
+            string responseFileCommands, 
+            string commandLineCommands
+            )
         {
-            int num;
-            ITaskItem[] sourcesCompiled = base.SourcesCompiled;
-            int index = 0;
-            while (true)
+            foreach (ITaskItem item in this.SourcesCompiled)
             {
-                if (index >= sourcesCompiled.Length)
-                {
-                    num = 0;
-                    break;
-                }
-                ITaskItem item = sourcesCompiled[index];
-                base.Log.LogMessage(MessageImportance.High, Path.GetFileName(item.ItemSpec), new object[0]);
-                index++;
+                Log.LogMessage(MessageImportance.High, Path.GetFileName(item.ItemSpec));
             }
-            goto TR_0015;
-        TR_0002:
-            if (this.GNUMode)
+
+            for (int num = 0; num < 30; ++num)
             {
-                base.errorListRegexList.Add(gccMessageRegex);
-            }
-            return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
-        TR_0003:
-            if (num >= 30)
-            {
-                goto TR_0002;
-            }
-        TR_0015:
-            while (true)
-            {
-                num++;
+                //Read
                 if (!File.Exists(Path.Combine(this.TrackerIntermediateDirectory, this.firstReadTlog)))
                 {
                     try
                     {
                         using (File.Create(Path.Combine(this.TrackerIntermediateDirectory, this.firstReadTlog)))
                         {
+
                         }
                     }
                     catch (IOException)
                     {
                         Thread.Sleep(50);
-                        goto TR_0003;
+                        //Skip Write
+                        continue;
                     }
                 }
-                break;
-            }
-            if (File.Exists(Path.Combine(this.TrackerIntermediateDirectory, this.firstWriteTlog)))
-            {
-                goto TR_0002;
-            }
-            else
-            {
-                try
+
+                //Write
+                if (!File.Exists(Path.Combine(this.TrackerIntermediateDirectory, this.firstWriteTlog)))
                 {
-                    using (File.Create(Path.Combine(this.TrackerIntermediateDirectory, this.firstWriteTlog)))
+                    try
                     {
+                        using (File.Create(Path.Combine(this.TrackerIntermediateDirectory, this.firstWriteTlog)))
+                        {
+
+                        }
+                        break;
                     }
-                    goto TR_0002;
+                    catch (IOException)
+                    {
+                        Thread.Sleep(50);
+                        //Not Break and Try Again
+                    }
                 }
-                catch (IOException)
+                else
                 {
-                    Thread.Sleep(50);
+                    break;
                 }
             }
-            goto TR_0003;
+
+            if (GNUMode)
+            {
+                errorListRegexList.Add(gccMessageRegex);
+            }
+
+            return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
         }
 
         protected override string GenerateResponseFileCommandsExceptSwitches(
@@ -146,12 +139,12 @@
             VCToolTask.EscapeFormat escapeFormat = VCToolTask.EscapeFormat.EscapeTrailingSlash
             )
         {
-            string str = base.GenerateResponseFileCommandsExceptSwitches(switchesToRemove, format, VCToolTask.EscapeFormat.EscapeTrailingSlash);
+            string responseFileCommands = base.GenerateResponseFileCommandsExceptSwitches(switchesToRemove, format, VCToolTask.EscapeFormat.EscapeTrailingSlash);
             if (format == VCToolTask.CommandLineFormat.ForBuildLog)
             {
-                str = str.Replace(@"\", @"\\").Replace(@"\\\\ ", @"\\ ");
+                responseFileCommands = responseFileCommands.Replace(@"\", @"\\").Replace(@"\\\\ ", @"\\ ");
             }
-            return str;
+            return responseFileCommands;
         }
 
         protected override void RemoveTaskSpecificInputs(Utilities.Extension.CanonicalTrackedInputFiles compactInputs)

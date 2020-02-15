@@ -19,9 +19,7 @@
         private Dictionary<string, ToolSwitch> activeToolSwitchesValues;
         private EventWaitHandle cancelEvent;
         private string cancelEventName;
-        private Dictionary<string, ToolSwitch> activeToolSwitches;
         private Dictionary<string, Dictionary<string, string>> values;
-        private string additionalOptions;
         private char prefix;
         private TaskLoggingHelper logPrivate;
         protected List<Regex> errorListRegexList;
@@ -349,66 +347,110 @@
             }
         }
 
+
+
         protected override string GenerateFullPathToTool() =>
             this.ToolName;
 
-        protected override string GenerateResponseFileCommands() =>
-            this.GenerateResponseFileCommands(CommandLineFormat.ForBuildLog, EscapeFormat.Default);
+        #region MSBuild response files
+        /// <summary>
+        /// MSBuild response files
+        /// </summary>
+        /// <remarks>
+        /// https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-response-files?view=vs-2019
+        /// </remarks>
 
-        protected virtual string GenerateResponseFileCommands(CommandLineFormat format, EscapeFormat escapeFormat) =>
-            this.GenerateResponseFileCommandsExceptSwitches(new string[0], format, escapeFormat);
+        /// <summary>
+        /// Implemented by the derived class
+        /// </summary>
+        protected virtual ArrayList SwitchOrderList => null;
 
-        protected virtual string GenerateResponseFileCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = 0, EscapeFormat escapeFormat = 0)
+        /// <summary>
+        /// Pushed by the derived class
+        /// </summary>
+        private Dictionary<string, ToolSwitch> activeToolSwitches;
+        protected Dictionary<string, ToolSwitch> ActiveToolSwitches => this.activeToolSwitches;
+
+        /// <summary>
+        /// Additional Options
+        /// </summary>
+        private string additionalOptions;
+        public string AdditionalOptions
         {
-            bool flag = false;
+            get
+            {
+                return this.additionalOptions;
+            }
+            set
+            {
+                this.additionalOptions = this.TranslateAdditionalOptions(value);
+            }
+        }
+        protected virtual string TranslateAdditionalOptions(string options) =>options;
+
+        protected override string GenerateResponseFileCommands() => this.GenerateResponseFileCommands(CommandLineFormat.ForBuildLog, EscapeFormat.Default);
+
+        protected virtual string GenerateResponseFileCommands(CommandLineFormat format, EscapeFormat escapeFormat) => this.GenerateResponseFileCommandsExceptSwitches(new string[0], format, escapeFormat);
+
+        protected virtual string GenerateResponseFileCommandsExceptSwitches(
+            string[] switchesToRemove, 
+            CommandLineFormat format = CommandLineFormat.ForBuildLog, 
+            EscapeFormat escapeFormat = EscapeFormat.Default)
+        {
             this.AddDefaultsToActiveSwitchList();
             this.AddFallbacksToActiveSwitchList();
             this.PostProcessSwitchList();
-            CommandLineBuilder cmdLine = new CommandLineBuilder(true);
-            foreach (string str in this.SwitchOrderList)
+
+            CommandLineBuilder commandLineBuilder = new CommandLineBuilder(true);
+
+            bool hasBuiltAdditionalArgs = false;
+
+            foreach (string switchOrder in this.SwitchOrderList)
             {
-                if (!this.IsPropertySet(str))
+                if (this.IsPropertySet(switchOrder))
                 {
-                    if (string.Equals(str, "additionaloptions", StringComparison.OrdinalIgnoreCase))
+                    ToolSwitch activeToolSwitch = this.activeToolSwitches[switchOrder];
+                    if (this.VerifyDependenciesArePresent(activeToolSwitch) && this.VerifyRequiredArgumentsArePresent(activeToolSwitch, false))
                     {
-                        this.BuildAdditionalArgs(cmdLine);
-                        flag = true;
-                        continue;
-                    }
-                    if (!string.Equals(str, "AlwaysAppend", StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-                    cmdLine.AppendSwitch(this.AlwaysAppend);
-                    continue;
-                }
-                ToolSwitch switch2 = this.activeToolSwitches[str];
-                if (this.VerifyDependenciesArePresent(switch2) && this.VerifyRequiredArgumentsArePresent(switch2, false))
-                {
-                    bool flag2 = true;
-                    if (switchesToRemove != null)
-                    {
-                        foreach (string str2 in switchesToRemove)
+                        bool notRemove = true;
+
+                        if (switchesToRemove != null)
                         {
-                            if (str.Equals(str2, StringComparison.OrdinalIgnoreCase))
+                            foreach (string strRemove in switchesToRemove)
                             {
-                                flag2 = false;
-                                break;
+                                if (switchOrder.Equals(strRemove, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    notRemove = false;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (flag2)
-                    {
-                        this.GenerateCommandsAccordingToType(cmdLine, switch2, false, format, escapeFormat);
+
+                        if (notRemove)
+                        {
+                            this.GenerateCommandsAccordingToType(commandLineBuilder, activeToolSwitch, false, format, escapeFormat);
+                        }
                     }
                 }
+                else if (string.Equals(switchOrder, "additionaloptions", StringComparison.OrdinalIgnoreCase))
+                {
+                    this.BuildAdditionalArgs(commandLineBuilder);
+                    hasBuiltAdditionalArgs = true;
+                }
+                else if (string.Equals(switchOrder, "AlwaysAppend", StringComparison.OrdinalIgnoreCase))
+                {
+                    commandLineBuilder.AppendSwitch(this.AlwaysAppend);
+                }
             }
-            if (!flag)
+
+            if (!hasBuiltAdditionalArgs)
             {
-                this.BuildAdditionalArgs(cmdLine);
+                this.BuildAdditionalArgs(commandLineBuilder);
             }
-            return cmdLine.ToString();
+
+            return commandLineBuilder.ToString();
         }
+        #endregion
 
         protected string GetEffectiveArgumentsValues(ToolSwitch property)
         {
@@ -645,9 +687,6 @@
             }
         }
 
-        protected virtual string TranslateAdditionalOptions(string options) =>
-            options;
-
         protected bool ValidateInteger(string switchName, int min, int max, int value)
         {
             if ((value >= min) && (value <= max))
@@ -767,26 +806,10 @@
             return true;
         }
 
-        protected Dictionary<string, ToolSwitch> ActiveToolSwitches =>
-            this.activeToolSwitches;
-
-        public string AdditionalOptions
-        {
-            get
-            {
-                return this.additionalOptions;
-            }
-            set
-            {
-                this.additionalOptions = this.TranslateAdditionalOptions(value);
-            }
-        }
-
         protected override Encoding ResponseFileEncoding =>
             Encoding.Unicode;
 
-        protected virtual ArrayList SwitchOrderList =>
-            null;
+
 
         protected string CancelEventName =>
             this.cancelEventName;
