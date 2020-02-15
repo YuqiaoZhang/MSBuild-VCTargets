@@ -20,4 +20,6 @@ You may use the [LLVM Tool Chain](https://github.com/YuqiaoZhang/EL7-RPMS/tree/m
 You may use the [Visual Studio Code with the C# extension](https://code.visualstudio.com/docs/languages/dotnet) to debug and I have prepared the **json files**(in the DotNet/.vscode) for you.  
 The breakpoints may not be hit if you use the **MSBuild in DotNet Core SDK**(in the /usr/share/dotnet/sdk/2.1.803/MSBuild.dll) for debugging.  
 You may need to build another [MSBuild](https://github.com/microsoft/msbuild/blob/master/documentation/wiki/Building-Testing-and-Debugging-on-.Net-Core-MSBuild.md#build-1) with the **Debug configuration** for debugging.  
-You may need to install the [libssl1.0.0](https://github.com/YuqiaoZhang/EL7-RPMS/tree/master/openssl) before build the **MSBuild** if you use the **CentOS 7** platform.   
+You may need to install the [libssl1.0.0](https://github.com/YuqiaoZhang/EL7-RPMS/tree/master/openssl) before build the **MSBuild** if you use the **CentOS 7** platform.  
+
+![](./README-1.png)  
