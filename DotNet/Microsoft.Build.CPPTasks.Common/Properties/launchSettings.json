@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Microsoft.Build.CPPTasks.Common": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\dotnet\\dotnet.exe",
+      "commandLineArgs": "C:\\Users\\Administrator\\Documents\\git\\msbuild-debuginfo\\netcoreapp2.1\\MSBuild.dll C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\VCProjectDefaults\\PTSystem_PosixAndroid.vcxproj -property:VCTargetsPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\MSBuild\\VCTargets\\ -property:CLTrackerSdkPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\MSBuild\\TrackerSDK\\ -property:CLTrackerFrameworkPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\MSBuild\\TrackerFramework\\ -property:LinkTrackerSdkPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\MSBuild\\TrackerSDK\\ -property:LinkTrackerFrameworkPath=C:\\Users\\Administrator\\Documents\\git\\MSBuild-VCTargets\\MSBuild\\TrackerFramework\\ -property:Configuration=Debug -property:Platform=x64"
+    }
+  }
+}
