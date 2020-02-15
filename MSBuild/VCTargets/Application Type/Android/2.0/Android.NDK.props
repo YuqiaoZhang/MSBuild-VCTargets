@@ -26,7 +26,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <!-- else use host bitness 32-->
     <HostTag Condition="'$(HostTag)' == ''">windows</HostTag>
 
-    <LLVMToolchainPrebuiltRoot Condition="'$(LLVMToolchainPrebuiltRoot)' == ''">$(VS_NdkRoot)\toolchains\$(LLVMPathName)\prebuilt\$(HostTag)</LLVMToolchainPrebuiltRoot>
+    <LLVMToolchainPrebuiltRoot Condition="'$(LLVMToolchainPrebuiltRoot)' == ''">$(VS_NdkRoot)/LLVMToolChain/</LLVMToolchainPrebuiltRoot>
     <ToolchainPrebuiltPath Condition="'$(ToolchainPrebuiltPath)' == ''">$(VS_NdkRoot)\toolchains\$(ToolchainPathName)\prebuilt\$(HostTag)</ToolchainPrebuiltPath>
     <GccToolchainPrebuiltPath Condition="'$(GccToolchainPrebuiltPath)' == ''">$(VS_NdkRoot)\toolchains\$(ToolchainPathName)\prebuilt\$(HostTag)</GccToolchainPrebuiltPath>
     

@@ -22,9 +22,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   </PropertyGroup>
 
   <PropertyGroup>
-    <ExecutablePath Condition="'$(ExecutablePath)' == ''">$(LLVMToolchainPrebuiltRoot)\bin;$(ToolchainPrebuiltPath)\bin;$(MSBuild_ExecutablePath);$(PATH);</ExecutablePath>
+    <ExecutablePath Condition="'$(ExecutablePath)' == ''">$(LLVMToolchainPrebuiltRoot)/bin64/;$(ToolchainPrebuiltPath)\bin;$(MSBuild_ExecutablePath);$(PATH);</ExecutablePath>
     <IncludePath Condition="'$(IncludePath)' == ''">$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;</IncludePath>
     <ExcludePath Condition="'$(ExcludePath)' == ''">$(LLVMToolchainPrebuiltRoot)\lib64\clang\$(LLVMVersion)\include;$(LLVMToolchainPrebuiltRoot)\bin;$(ToolchainPrebuiltPath)\bin;$(MSBuildToolsPath);$(MSBuildFrameworkToolsPath);$(MSBuild_ExecutablePath);$(SystemRoot)</ExcludePath>
+    <ToolchainPrefix>llvm-</ToolchainPrefix>
   </PropertyGroup>
 
   <ItemDefinitionGroup>

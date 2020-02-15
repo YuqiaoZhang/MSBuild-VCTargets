@@ -149,7 +149,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     </ClangLink>
 
     <PropertyGroup>
-      <StripToolExe Condition="'$(StripToolExe)' == '' and '$(ToolchainPrefix)' != ''">$(ToolchainPrefix)strip.exe</StripToolExe>
+      <StripToolExe Condition="'$(StripToolExe)' == ''">$(ToolchainPrefix)strip</StripToolExe>
     </PropertyGroup>
 
     <!-- Strip symbols to reduce size for remote debugging -->

@@ -22,7 +22,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <TargetArchAbi>x86_64</TargetArchAbi>
     <ThumbMode Condition="'$(ThumbMode)' == ''">Disabled</ThumbMode>
     <ToolchainName>x86_64</ToolchainName>
-    <ToolchainPrefix>x86_64-linux-android-</ToolchainPrefix>
+    <ToolchainPrefix>llvm-</ToolchainPrefix>
   </PropertyGroup>
 
   <!-- Import After -->

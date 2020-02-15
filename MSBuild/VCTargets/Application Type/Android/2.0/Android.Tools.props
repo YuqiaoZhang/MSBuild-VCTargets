@@ -1,6 +1,6 @@
 <!--
 ***********************************************************************************************
-Android.tools.props
+Android.Tools.props
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -18,7 +18,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <VS_AndroidHome Condition="'$(VS_AndroidHome)' == ''">$(Registry:HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\SecondaryInstaller\VC@AndroidHome)</VS_AndroidHome>
     <VS_AntHome Condition="'$(VS_AntHome)' == ''">$(Registry:HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\SecondaryInstaller\VC@AntHome)</VS_AntHome>
     <VS_JavaHome Condition="'$(VS_JavaHome)' == ''">$(Registry:HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\SecondaryInstaller\VC@JavaHome)</VS_JavaHome>
-    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == ''">$(Registry:HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\SecondaryInstaller\VC@NDKRoot)</VS_NdkRoot>
+    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == ''">$(MSBuildThisFileFullPath)/../../../../../</VS_NdkRoot>
 
     <!-- 2) Use the locations from the secondary installer  -->
     <VS_AndroidHome Condition="'$(VS_AndroidHome)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Android SDK Tools@Path)</VS_AndroidHome>
@@ -34,11 +34,6 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <VS_JavaHome Condition="'$(VS_JavaHome)' == ''">$([MSBuild]::GetRegistryValueFromView("HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\$(VS_Java_CurrentVersion)", "JavaHome", null, RegistryView.Registry64, RegistryView.Registry32))</VS_JavaHome>
     <VS_JavaHome Condition="'$(VS_JavaHome)' == ''">$([MSBuild]::GetRegistryValueFromView("HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.8", "JavaHome", null, RegistryView.Registry64, RegistryView.Registry32))</VS_JavaHome>
     <VS_JavaHome Condition="'$(VS_JavaHome)' == ''">$([MSBuild]::GetRegistryValueFromView("HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.7", "JavaHome", null, RegistryView.Registry64, RegistryView.Registry32))</VS_JavaHome>
-
-    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == '' and '$(PreferredToolArchitecture)' == 'x64'">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\14.0\Setup\VS\SecondaryInstaller\AndroidNDK64\2.0@NDK_HOME)</VS_NdkRoot>
-    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == '' and '$(PreferredToolArchitecture)' == 'x64'">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0\Setup\VS\SecondaryInstaller\AndroidNDK64\2.0@NDK_HOME)</VS_NdkRoot>
-    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\14.0\Setup\VS\SecondaryInstaller\AndroidNDK\2.0@NDK_HOME)</VS_NdkRoot>
-    <VS_NdkRoot Condition="'$(VS_NdkRoot)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0\Setup\VS\SecondaryInstaller\AndroidNDK\2.0@NDK_HOME)</VS_NdkRoot>
   </PropertyGroup>
 
   <!-- Parse source.properties to get NDK version -->
