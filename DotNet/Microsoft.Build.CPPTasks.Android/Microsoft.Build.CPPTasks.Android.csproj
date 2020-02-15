@@ -15,6 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Build.CPPTasks.Common\Microsoft.Build.CPPTasks.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.Build.Utilities.Extension\Microsoft.Build.Utilities.Extension.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

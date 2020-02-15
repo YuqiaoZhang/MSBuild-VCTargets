@@ -140,7 +140,11 @@
             goto TR_0003;
         }
 
-        protected override string GenerateResponseFileCommandsExceptSwitches(string[] switchesToRemove, VCToolTask.CommandLineFormat format = 0, VCToolTask.EscapeFormat escapeFormat = VCToolTask.EscapeFormat.EscapeTrailingSlash)
+        protected override string GenerateResponseFileCommandsExceptSwitches(
+            string[] switchesToRemove,
+            VCToolTask.CommandLineFormat format = VCToolTask.CommandLineFormat.ForBuildLog,
+            VCToolTask.EscapeFormat escapeFormat = VCToolTask.EscapeFormat.EscapeTrailingSlash
+            )
         {
             string str = base.GenerateResponseFileCommandsExceptSwitches(switchesToRemove, format, VCToolTask.EscapeFormat.EscapeTrailingSlash);
             if (format == VCToolTask.CommandLineFormat.ForBuildLog)
