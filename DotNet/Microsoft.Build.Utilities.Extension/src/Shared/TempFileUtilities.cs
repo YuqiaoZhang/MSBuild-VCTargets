@@ -19,7 +19,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Caller must delete when finished. 
         /// </summary>
         /// <param name="createDirectory"></param>
-        internal static string GetTemporaryDirectory(bool createDirectory = true)
+        public static string GetTemporaryDirectory(bool createDirectory = true)
         {
             string temporaryDirectory = Path.Combine(Path.GetTempPath(), "Temporary" + Guid.NewGuid().ToString("N"));
 
@@ -38,7 +38,7 @@ namespace Microsoft.Build.Shared.Extension
         /// File will NOT be created.
         /// May throw IOException.
         /// </summary>
-        internal static string GetTemporaryFileName(string extension)
+        public static string GetTemporaryFileName(string extension)
         {
             return GetTemporaryFile(null, extension, false);
         }
@@ -49,7 +49,7 @@ namespace Microsoft.Build.Shared.Extension
         /// File is guaranteed to be unique.
         /// Caller must delete it when finished.
         /// </summary>
-        internal static string GetTemporaryFile()
+        public static string GetTemporaryFile()
         {
             return GetTemporaryFile(".tmp");
         }
@@ -61,7 +61,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Caller must delete it when finished.
         /// May throw IOException.
         /// </summary>
-        internal static string GetTemporaryFile(string extension)
+        public static string GetTemporaryFile(string extension)
         {
             return GetTemporaryFile(null, extension);
         }
@@ -74,7 +74,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Caller must delete it when finished.
         /// May throw IOException.
         /// </summary>
-        internal static string GetTemporaryFile(string directory, string extension, bool createFile = true)
+        public static string GetTemporaryFile(string directory, string extension, bool createFile = true)
         {
             ErrorUtilities.VerifyThrowArgumentLengthIfNotNull(directory, nameof(directory));
             ErrorUtilities.VerifyThrowArgumentLength(extension, nameof(extension));
@@ -107,7 +107,7 @@ namespace Microsoft.Build.Shared.Extension
             }
         }
 
-        internal static void CopyDirectory(string source, string dest)
+        public static void CopyDirectory(string source, string dest)
         {
             Directory.CreateDirectory(dest);
 

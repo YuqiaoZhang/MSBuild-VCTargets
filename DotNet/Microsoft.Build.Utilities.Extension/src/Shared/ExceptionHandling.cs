@@ -50,7 +50,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <summary>
         /// The directory used for diagnostic log files.
         /// </summary>
-        internal static string DebugDumpPath => s_debugDumpPath;
+        public static string DebugDumpPath => s_debugDumpPath;
 
 #if !BUILDINGAPPXTASKS
         /// <summary>
@@ -65,7 +65,7 @@ namespace Microsoft.Build.Shared.Extension
         /// </summary>
         /// <param name="e"> The exception to check. </param>
         /// <returns> True if exception is critical. </returns>
-        internal static bool IsCriticalException(Exception e)
+        public static bool IsCriticalException(Exception e)
         {
             if (e is OutOfMemoryException
 #if FEATURE_VARIOUS_EXCEPTIONS
@@ -109,7 +109,7 @@ namespace Microsoft.Build.Shared.Extension
         /// </summary>
         /// <param name="e">The exception to check.</param>
         /// <returns>True if exception is not IO related or expected otherwise false.</returns>
-        internal static bool NotExpectedException(Exception e)
+        public static bool NotExpectedException(Exception e)
         {
             return !IsIoRelatedException(e);
         }
@@ -119,7 +119,7 @@ namespace Microsoft.Build.Shared.Extension
         /// </summary>
         /// <param name="e">The exception to check.</param>
         /// <returns>True if exception is IO related.</returns>
-        internal static bool IsIoRelatedException(Exception e)
+        public static bool IsIoRelatedException(Exception e)
         {
             // These all derive from IOException
             //     DirectoryNotFoundException
@@ -139,7 +139,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <summary> Checks if the exception is an XML one. </summary>
         /// <param name="e"> Exception to check. </param>
         /// <returns> True if exception is related to XML parsing. </returns>
-        internal static bool IsXmlException(Exception e)
+        public static bool IsXmlException(Exception e)
         {
             return e is XmlException
 #if FEATURE_VARIOUS_EXCEPTIONS
@@ -153,7 +153,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <param name="e"> XML-related exception. </param>
         /// <returns> Line and column numbers if available, (0,0) if not. </returns>
         /// <remarks> This function works around the fact that XmlException and XmlSchemaException are not directly related. </remarks>
-        internal static LineAndColumn GetXmlLineAndColumn(Exception e)
+        public static LineAndColumn GetXmlLineAndColumn(Exception e)
         {
             var line = 0;
             var column = 0;
@@ -190,7 +190,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Otherwise, return true.
         /// </summary>
         /// <param name="e">The exception to check.</param>
-        internal static bool NotExpectedIoOrXmlException(Exception e)
+        public static bool NotExpectedIoOrXmlException(Exception e)
         {
             if
             (
@@ -209,7 +209,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Otherwise, return true.
         /// </summary>
         /// <param name="e">The exception to check.</param>
-        internal static bool NotExpectedReflectionException(Exception e)
+        public static bool NotExpectedReflectionException(Exception e)
         {
             // We are explicitly not handling TargetInvocationException. Those are just wrappers around
             // exceptions thrown by the called code (such as a task or logger) which callers will typically
@@ -247,7 +247,7 @@ namespace Microsoft.Build.Shared.Extension
         /// well as SerializationException and IO exceptions. (Obviously
         /// it has to do reflection but it ought to be wrapping the exceptions.)
         /// </summary>
-        internal static bool NotExpectedSerializationException(Exception e)
+        public static bool NotExpectedSerializationException(Exception e)
         {
             if
             (
@@ -266,7 +266,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <summary>
         /// Returns false if this is a known exception thrown by the registry API.
         /// </summary>
-        internal static bool NotExpectedRegistryException(Exception e)
+        public static bool NotExpectedRegistryException(Exception e)
         {
             if (e is SecurityException
              || e is UnauthorizedAccessException
@@ -283,7 +283,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <summary>
         /// Returns false if this is a known exception thrown by function evaluation
         /// </summary>
-        internal static bool NotExpectedFunctionException(Exception e)
+        public static bool NotExpectedFunctionException(Exception e)
         {
             if (e is InvalidCastException
              || e is ArgumentNullException
@@ -302,7 +302,7 @@ namespace Microsoft.Build.Shared.Extension
         /// Dump any unhandled exceptions to a file so they can be diagnosed
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "It is called by the CLR")]
-        internal static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        public static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = (Exception)e.ExceptionObject;
             DumpExceptionToFile(ex);
@@ -312,7 +312,7 @@ namespace Microsoft.Build.Shared.Extension
         /// <summary>
         /// Dump the exception information to a file
         /// </summary>
-        internal static void DumpExceptionToFile(Exception ex)
+        public static void DumpExceptionToFile(Exception ex)
         {
             //  Locking on a type is not recommended.  However, we are doing it here to be extra cautious about compatibility because
             //  this method previously had a [MethodImpl(MethodImplOptions.Synchronized)] attribute, which does lock on the type when
@@ -354,7 +354,7 @@ namespace Microsoft.Build.Shared.Extension
 #endif
 
         /// <summary> Line and column pair. </summary>
-        internal struct LineAndColumn
+        public struct LineAndColumn
         {
             /// <summary> Gets or sets line number. </summary>
             internal int Line { get; set; }
