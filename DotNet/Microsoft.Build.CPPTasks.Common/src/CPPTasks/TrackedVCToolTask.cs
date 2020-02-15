@@ -788,6 +788,13 @@
                         trackerArguments = arguments;
                     }
 
+                    //**ClangCompile::Execute** //Not Implement //Instantiate by Reflection
+                    //=>TrackedVCToolTask::Execute
+                    //=>VCToolTask::Execute
+                    //=>ToolTask::Execute
+                    //=>ClangCompile::ExecuteTool //virtual -> override
+                    //=>TrackedVCToolTask::ExecuteTool //Tracker.exe
+                    //=>ToolTask::ExecuteTool //StartProcess
                     return base.ExecuteTool(trackerPath, responseFileCommands, trackerArguments);
                 }           
             }
