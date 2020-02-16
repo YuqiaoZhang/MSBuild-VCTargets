@@ -27,7 +27,7 @@ int main(int argc, char **argv)
         // new program begins execution.
         ::ptrace(PTRACE_TRACEME, 0L, 0L, 0L);
 
-        return ::execlp("cat", "/usr/include/stdio.h");
+        return ::execlp("cat", "cat", "/usr/include/stdio.h", NULL);
     }
     else
     {
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
         //ptrace only works when tracee is stopped?
         int i = ::ptrace(PTRACE_SETOPTIONS, pid, 0L, PTRACE_O_TRACESYSGOOD);
 
-        for (int _7 = 0; _7 < 15; ++_7)
+        for (int _7 = 0; _7 < 150; ++_7)
         {
             // http://man7.org/linux/man-pages/man2/ptrace.2.html
             // Restart the stopped tracee as for PTRACE_CONT.
@@ -104,10 +104,7 @@ int main(int argc, char **argv)
                             break;
                         }
                     }
-                    if (pathname[1] == 'u')
-                    {
-                        printf("%s\n", pathname);
-                    }
+                    printf("track - %s\n", pathname);
                 }
                 break;
                 case SYS_openat:
@@ -121,6 +118,13 @@ int main(int argc, char **argv)
 
                 //Syscall Exit //Some Syscall(such as exec) not return?
                 p2 = ::waitpid(pid, &status, 0);
+                bool isstopped = (WIFSTOPPED(status));
+                bool isexited = (WIFEXITED(status));
+
+                if ((WIFEXITED(status)))
+                {
+                    break;
+                }
 
 #ifdef __x86_64__
                 auto systemcallnumber_exit = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L);
@@ -132,9 +136,16 @@ int main(int argc, char **argv)
 #endif
                 assert(systemcallnumber_entry == systemcallnumber_exit);
             }
+            else if ((WIFEXITED(status)))
+            {
+                break;
+            }
             else
             {
                 i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
+                p2 = ::waitpid(pid, &status, 0);
+                bool isstopped = (WIFSTOPPED(status));
+                bool isexited = (WIFEXITED(status));
             }
         }
 
