@@ -22,7 +22,7 @@
             ],
             "cwd": "${workspaceFolder}/../VCProjectDefaults/",
             "console": "externalTerminal",
-            "stopAtEntry": true
+            "stopAtEntry": false
         },
         {
             "name": ".NET Core Attach",
