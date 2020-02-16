@@ -1,0 +1,71 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Tracker Debug build",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "CONF=Debug"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {}
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Tracker Debug clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "CONF=Debug",
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Tracker Release build",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "CONF=Release"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {}
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Tracker Release clean",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "Makefile",
+                "CONF=Release",
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
