@@ -1,10 +1,18 @@
+## How to use  
+The [VCProjectDefaults](VCProjectDefaults) directory shows a typical MSBuild-VC-Project.  
+You can just use the following command to build that MSBuild-VC-Project:  
+```
+cd <*root of this git repository*>/VCProjectDefaults
+./PT-MSBuild.sh Debug x64  
+```  
+
 ## Building
 Install the [DotNet Core SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-centos7#install-the-net-core-sdk) and use the [MSBuild](https://github.com/microsoft/msbuild/blob/master/documentation/wiki/Building-Testing-and-Debugging-on-.Net-Core-MSBuild.md#getting-net-core-msbuild-binaries-without-building-the-code) to build the c# projects.  
   
 You can use the following command to build the c# projects.  
   
 ```  
-cd /*root of this git repository*/
+cd <*root of this git repository*>
 dotnet build ./DotNet/Microsoft.Build.Utilities.Extension/Microsoft.Build.Utilities.Extension.csproj  -property:Configuration=Debug -property:Platform=AnyCPU
 dotnet build ./DotNet/Microsoft.Build.CPPTasks.Common/Microsoft.Build.CPPTasks.Common.csproj  -property:Configuration=Debug -property:Platform=AnyCPU
 dotnet build ./DotNet/Microsoft.Build.CPPTasks.Android/Microsoft.Build.CPPTasks.Android.csproj  -property:Configuration=Debug -property:Platform=AnyCPU
