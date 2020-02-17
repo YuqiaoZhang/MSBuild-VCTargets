@@ -25,9 +25,9 @@
             this.switchOrderList = new ArrayList();
             this.switchOrderList.Add("AlwaysAppend");
             this.switchOrderList.Add("MSVCErrorReport");
-            this.switchOrderList.Add("GccToolChain");
-            this.switchOrderList.Add("TargetArch");
-            this.switchOrderList.Add("Sysroot");
+            //this.switchOrderList.Add("GccToolChain");
+            //this.switchOrderList.Add("TargetArch");
+            //this.switchOrderList.Add("Sysroot");
             this.switchOrderList.Add("AdditionalIncludeDirectories");
             this.switchOrderList.Add("DebugInformationFormat");
             this.switchOrderList.Add("ObjectFileName");
@@ -72,8 +72,8 @@
         }
 
         protected override int ExecuteTool(
-            string pathToTool, 
-            string responseFileCommands, 
+            string pathToTool,
+            string responseFileCommands,
             string commandLineCommands
             )
         {
@@ -186,6 +186,7 @@
             }
         }
 
+#if false
         public virtual string GccToolChain
         {
             get
@@ -254,7 +255,7 @@
                 base.AddActiveSwitchToolValue(switch2);
             }
         }
-
+#endif
         public virtual string[] AdditionalIncludeDirectories
         {
             get

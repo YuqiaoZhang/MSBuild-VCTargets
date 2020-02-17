@@ -54,7 +54,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <TargetExt />
     <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName)</ProjectName>
     
-    <Sysroot>$(VS_NdkRoot)\platforms\$(AndroidAPILevel)\arch-$(PlatformTarget)</Sysroot>
+    <!--Sysroot>$(VS_NdkRoot)\platforms\$(AndroidAPILevel)\arch-$(PlatformTarget)</Sysroot-->
 
     <ExtensionsToDeleteOnClean Condition="'$(ExtensionsToDeleteOnClean)' == ''">*.d;*.tlog;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
     <PreBuildEventUseInBuild Condition="'$(PreBuildEventUseInBuild)' == ''">true</PreBuildEventUseInBuild>

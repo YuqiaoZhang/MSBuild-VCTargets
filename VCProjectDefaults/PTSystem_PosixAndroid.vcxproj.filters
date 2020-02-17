@@ -7,74 +7,68 @@
     <Filter Include="Public">
       <UniqueIdentifier>{e5c9323f-db25-4c65-916b-a9d32fb17c40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Private\System">
+    <Filter Include="Private\McRT">
       <UniqueIdentifier>{8d287d45-9503-46e0-9443-7f3c979d63d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Private\System\Posix">
+    <Filter Include="Private\McRT\Posix">
       <UniqueIdentifier>{f35023c2-844c-436f-addc-4c1f6f07e018}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Public\System">
+    <Filter Include="Public\McRT">
       <UniqueIdentifier>{7de5b5b1-92d7-4d2b-9363-f7d2078d8ebd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Public\System\Posix">
+    <Filter Include="Public\McRT\Posix">
       <UniqueIdentifier>{108d8c74-c00f-4b57-8efa-db93f9bf2d3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Public\PTCommon.h">
+    <ClInclude Include="Source\Public\PTCommon.h">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSCommon.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Public\McRT\PTSCommon.h">
+      <Filter>Public\McRT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSFile.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Public\McRT\PTSMemoryAllocator.h">
+      <Filter>Public\McRT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSMemoryAllocator.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Public\McRT\PTSTaskScheduler.h">
+      <Filter>Public\McRT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSTaskScheduler.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Public\McRT\PTSThread.h">
+      <Filter>Public\McRT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSThread.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Private\McRT\PTSTaskSchedulerImpl.h">
+      <Filter>Private\McRT</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Private\System\PTSTaskSchedulerImpl.h">
-      <Filter>Private\System</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Private\System\Posix\PTSFileImpl_PosixAndroid.h">
-      <Filter>Private\System\Posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Public\System\PTSMemory.h">
-      <Filter>Public\System</Filter>
+    <ClInclude Include="Source\Public\McRT\PTSMemory.h">
+      <Filter>Public\McRT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Private\System\PTSMemoryAllocator.cpp">
-      <Filter>Private\System</Filter>
+    <ClCompile Include="Source\Private\McRT\PTSMemoryAllocator.cpp">
+      <Filter>Private\McRT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Private\System\PTSTaskSchedulerImpl.cpp">
-      <Filter>Private\System</Filter>
+    <ClCompile Include="Source\Private\McRT\PTSTaskSchedulerImpl.cpp">
+      <Filter>Private\McRT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Private\System\Posix\PTSFileImpl_PosixAndroid.cpp">
-      <Filter>Private\System\Posix</Filter>
+    <ClCompile Include="Source\Private\McRT\Posix\PTSFileImpl_PosixAndroid.cpp">
+      <Filter>Private\McRT\Posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Private\System\PTSConvUTF.cpp">
-      <Filter>Private\System</Filter>
+    <ClCompile Include="Source\Private\McRT\PTSConvUTF.cpp">
+      <Filter>Private\McRT</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Private\System\PTSMemory.cpp">
-      <Filter>Private\System</Filter>
+    <ClCompile Include="Source\Private\McRT\PTSMemory.cpp">
+      <Filter>Private\McRT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Private\System\Posix\PTSMemoryAllocator.inl">
-      <Filter>Private\System\Posix</Filter>
+    <None Include="Source\Private\McRT\Posix\PTSMemoryAllocator.inl">
+      <Filter>Private\McRT\Posix</Filter>
     </None>
-    <None Include="..\..\Public\System\Posix\PTSThread.inl">
-      <Filter>Public\System\Posix</Filter>
+    <None Include="Source\Public\McRT\Posix\PTSThread.inl">
+      <Filter>Public\McRT\Posix</Filter>
     </None>
-    <None Include="..\..\Private\System\Posix\PTSTaskSchedulerImpl.inl">
-      <Filter>Private\System\Posix</Filter>
+    <None Include="Source\Private\McRT\Posix\PTSTaskSchedulerImpl.inl">
+      <Filter>Private\McRT\Posix</Filter>
     </None>
   </ItemGroup>
 </Project>

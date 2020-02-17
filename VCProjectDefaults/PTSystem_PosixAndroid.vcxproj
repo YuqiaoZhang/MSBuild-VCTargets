@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
@@ -35,27 +35,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Private\System\Posix\PTSFileImpl_PosixAndroid.h" />
-    <ClInclude Include="..\..\Private\System\PTSTaskSchedulerImpl.h" />
-    <ClInclude Include="..\..\Public\PTCommon.h" />
-    <ClInclude Include="..\..\Public\System\PTSCommon.h" />
-    <ClInclude Include="..\..\Public\System\PTSFile.h" />
-    <ClInclude Include="..\..\Public\System\PTSMemory.h" />
-    <ClInclude Include="..\..\Public\System\PTSMemoryAllocator.h" />
-    <ClInclude Include="..\..\Public\System\PTSTaskScheduler.h" />
-    <ClInclude Include="..\..\Public\System\PTSThread.h" />
+    <ClInclude Include="Source\Private\McRT\PTSTaskSchedulerImpl.h" />
+    <ClInclude Include="Source\Public\PTCommon.h" />
+    <ClInclude Include="Source\Public\McRT\PTSCommon.h" />
+    <ClInclude Include="Source\Public\McRT\PTSMemory.h" />
+    <ClInclude Include="Source\Public\McRT\PTSMemoryAllocator.h" />
+    <ClInclude Include="Source\Public\McRT\PTSTaskScheduler.h" />
+    <ClInclude Include="Source\Public\McRT\PTSThread.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Private\System\Posix\PTSFileImpl_PosixAndroid.cpp" />
-    <ClCompile Include="..\..\Private\System\PTSConvUTF.cpp" />
-    <ClCompile Include="..\..\Private\System\PTSMemory.cpp" />
-    <ClCompile Include="..\..\Private\System\PTSMemoryAllocator.cpp" />
-    <ClCompile Include="..\..\Private\System\PTSTaskSchedulerImpl.cpp" />
+    <ClCompile Include="Source\Private\McRT\PTSConvUTF.cpp" />
+    <ClCompile Include="Source\Private\McRT\PTSMemory.cpp" />
+    <ClCompile Include="Source\Private\McRT\PTSMemoryAllocator.cpp" />
+    <ClCompile Include="Source\Private\McRT\PTSTaskSchedulerImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Private\System\Posix\PTSMemoryAllocator.inl" />
-    <None Include="..\..\Private\System\Posix\PTSTaskSchedulerImpl.inl" />
-    <None Include="..\..\Public\System\Posix\PTSThread.inl" />
+    <None Include="Source\Private\McRT\Posix\PTSMemoryAllocator.inl" />
+    <None Include="Source\Private\McRT\Posix\PTSTaskSchedulerImpl.inl" />
+    <None Include="Source\Public\McRT\Posix\PTSThread.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{157ddace-e8fc-4971-ad32-2d041336be6e}</ProjectGuid>
@@ -71,56 +68,56 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <AndroidAPILevel>android-24</AndroidAPILevel>
-    <UseOfStl>c++_shared</UseOfStl>
+    <UseOfStl>c++</UseOfStl>
     <PlatformToolset>Clang_3_8</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -179,8 +176,7 @@
     <Link />
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -190,13 +186,13 @@
       <PreprocessorDefinitions>PTPOSIX;PTPOSIXLINUXBIONIC;PTMCRTAPI=PTEXPORT;PTX64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CLanguageStandard>c11</CLanguageStandard>
       <CppLanguageStandard>c++11</CppLanguageStandard>
-      <AdditionalOptions>-fvisibility=hidden %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-fvisibility=hidden -mssse3 -pthread %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
+      <AdditionalOptions>-pthread</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
@@ -210,8 +206,7 @@
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -221,13 +216,12 @@
       <PreprocessorDefinitions>PTPOSIX;PTPOSIXLINUXBIONIC;PTMCRTAPI=PTEXPORT;PTX64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CLanguageStandard>c11</CLanguageStandard>
       <CppLanguageStandard>c++11</CppLanguageStandard>
-      <AdditionalOptions>-fvisibility=hidden %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-fvisibility=hidden -mssse3 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -242,8 +236,7 @@
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -258,8 +251,7 @@
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -275,8 +267,7 @@
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -291,8 +282,7 @@
     </ClCompile>
     <Link />
     <Link>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries></IgnoreSpecificDefaultLibraries>
       <LibraryDependencies>m;$(StlLibraryName)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>

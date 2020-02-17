@@ -77,9 +77,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <GNUMode>$(GNUMode)</GNUMode>
         <ClangVersion>$(ClangVersion)</ClangVersion>
         <MSVCErrorReport>$(MSVCErrorReport)</MSVCErrorReport>
+        <!--
         <GccToolChain>$(GccToolchainPrebuiltPath)</GccToolChain>
         <Sysroot>$(Sysroot)</Sysroot>
         <TargetArch>$(ClangTarget)</TargetArch>
+        -->
         <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
         <WarningLevel Condition="'%(WarningLevel)' == 'Level1' or '%(WarningLevel)' == 'Level2' or '%(WarningLevel)' == 'Level3'">EnableAllWarnings</WarningLevel>
         <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.c'">CompileAsC</CompileAs>
@@ -187,10 +189,6 @@ Copyright (C) Microsoft Corporation. All rights reserved.
                   Verbose="%(ClCompile.Verbose)"
                   WarningLevel="%(ClCompile.WarningLevel)"
 
-                  GccToolChain="%(ClCompile.GccToolChain)"
-                  Sysroot="%(ClCompile.Sysroot)"
-                  TargetArch="%(ClCompile.TargetArch)"
-
                   TrackFileAccess="$(TrackFileAccess)"
                   TrackerLogDirectory="$(TLogLocation)"
                   MinimalRebuildFromTracking="%(ClCompile.MinimalRebuildFromTracking)"
@@ -245,10 +243,6 @@ Copyright (C) Microsoft Corporation. All rights reserved.
                   UseShortEnums="%(ClCompile.UseShortEnums)"
                   Verbose="%(ClCompile.Verbose)"
                   WarningLevel="%(ClCompile.WarningLevel)"
-
-                  GccToolChain="%(ClCompile.GccToolChain)"
-                  Sysroot="%(ClCompile.Sysroot)"
-                  TargetArch="%(ClCompile.TargetArch)"
 
                   TrackFileAccess="$(TrackFileAccess)"
                   TrackerLogDirectory="$(TLogLocation)"

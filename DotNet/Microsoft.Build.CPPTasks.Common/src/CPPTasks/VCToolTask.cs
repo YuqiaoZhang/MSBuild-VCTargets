@@ -390,7 +390,7 @@
 
         protected override string GenerateResponseFileCommands() => this.GenerateResponseFileCommands(CommandLineFormat.ForBuildLog, EscapeFormat.Default);
 
-        protected virtual string GenerateResponseFileCommands(CommandLineFormat format, EscapeFormat escapeFormat) => this.GenerateResponseFileCommandsExceptSwitches(new string[0], format, escapeFormat);
+        protected virtual string GenerateResponseFileCommands(CommandLineFormat format, EscapeFormat escapeFormat) => this.GenerateResponseFileCommandsExceptSwitches(null, format, escapeFormat);
 
         protected virtual string GenerateResponseFileCommandsExceptSwitches(
             string[] switchesToRemove, 

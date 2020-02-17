@@ -35,9 +35,9 @@
             this.switchOrderList.Add("AdditionalLibraryDirectories");
             this.switchOrderList.Add("UnresolvedSymbolReferences");
             this.switchOrderList.Add("OptimizeforMemory");
-            this.switchOrderList.Add("GccToolChain");
-            this.switchOrderList.Add("TargetArch");
-            this.switchOrderList.Add("Sysroot");
+            //this.switchOrderList.Add("GccToolChain");
+            //this.switchOrderList.Add("TargetArch");
+            //this.switchOrderList.Add("Sysroot");
             this.switchOrderList.Add("TrackerLogDirectory");
             this.switchOrderList.Add("IgnoreSpecificDefaultLibraries");
             this.switchOrderList.Add("ForceSymbolReferences");
@@ -380,6 +380,7 @@
             }
         }
 
+#if false
         public virtual string GccToolChain
         {
             get
@@ -448,6 +449,7 @@
                 base.AddActiveSwitchToolValue(switch2);
             }
         }
+#endif
 
         public virtual string TrackerLogDirectory
         {
