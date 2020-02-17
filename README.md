@@ -1,6 +1,6 @@
 ## How to use  
 The [VCProjectDefaults](VCProjectDefaults) directory shows a typical MSBuild-VC-Project.  
-You can just use the following command to build that MSBuild-VC-Project:  
+After installing the [LLVM Tool Chain](https://github.com/YuqiaoZhang/EL7-RPMS/tree/master/llvmtoolchain) prebuilt by me, you can just use the following command to build that MSBuild-VC-Project:  
 ```
 cd <*root of this git repository*>/VCProjectDefaults
 ./PT-MSBuild.sh Debug x64  
