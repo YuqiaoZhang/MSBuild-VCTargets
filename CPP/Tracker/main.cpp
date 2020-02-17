@@ -35,14 +35,14 @@ int main(int argc, char **argv)
         // If the PTRACE_O_TRACEEXEC option is not in effect, all successful
         // calls to execve(2) by the traced process will cause it to be sent a
         // SIGTRAP signal, giving the parent a chance to gain control before the
-        // new program begins execution.
+        // new program begins execution. 
         ::ptrace(PTRACE_TRACEME, 0L, 0L, 0L);
 
-        //::kill(::getpid(), SIGTRAP);
+        ::kill(::getpid(), SIGTRAP);
 
-        //::open("XXXX", O_RDWR);
+        ::open("XXXX", O_RDWR);
 
-        return ::execlp("cat", "cat", "/usr/include/stdio.h", NULL);
+        return ::execlp("ld", "ld", "/home/YuqiaoZhang/main.o", "-o", "/home/YuqiaoZhang/a.out", NULL);
     }
     else
     {
@@ -130,34 +130,56 @@ int main(int argc, char **argv)
                     printf("track - %s - %s \n", pathname, accmode);
                 }
                 break;
+                case SYS_open_by_handle_at:
+                {
+                    int huhu = 0;
+                }
+                break;
+                case SYS_fork:
+                case SYS_vfork:
+                {
+                    printf("track - fork \n");
+                }
+                break;
+                case SYS_execve:
+                {
+                    printf("track - execve \n");
+                }
+                break;
+                case SYS_pipe:
+                case SYS_pipe2:
+                {
+                    printf("track - pipe \n");
+                }
+                break;
                 default:
                     break;
                 }
 
                 // Restart the stopped tracee as for PTRACE_CONT.
-                i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
+                //i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
 
                 //Syscall Exit //Some Syscall(such as exec) not return?
-                p2 = ::waitpid(pid, &status, 0);
-                bool isstopped = (WIFSTOPPED(status));
-                bool isexited = (WIFEXITED(status));
+                //p2 = ::waitpid(pid, &status, 0);
+                //bool isstopped = (WIFSTOPPED(status));
+                //bool isexited = (WIFEXITED(status));
 
-                if ((WIFEXITED(status)))
-                {
-                    break;
-                }
+                //if ((WIFEXITED(status)))
+                //{
+                //    break;
+                //}
 
-                uint64_t systemcallnumber_exit;
-                ::ptrace_get_syscall_number(pid, &systemcallnumber_exit);
+                //uint64_t systemcallnumber_exit;
+                //::ptrace_get_syscall_number(pid, &systemcallnumber_exit);
 
-                assert(systemcallnumber_entry == systemcallnumber_exit);
+                //assert(systemcallnumber_entry == systemcallnumber_exit);
             }
             else if ((WIFEXITED(status)) || ((WIFSIGNALED(status))))
             {
                 break;
             }
         }
-        
+
         return 0;
     }
 }
