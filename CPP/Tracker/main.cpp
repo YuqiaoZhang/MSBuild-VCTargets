@@ -1,271 +1,406 @@
 #include <unistd.h>
-#include <sys/signal.h>
+#include <fcntl.h>
+#include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/ptrace.h>
 
+#include <string.h>
+
+#include <stdio.h>
 #include <assert.h>
 
-#include <bits/wordsize.h>
-#include <sys/syscall.h>
-
-#include <sys/reg.h>
-
-#include <errno.h>
-#include <string.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stddef.h>
 #include <stdint.h>
-#include <fcntl.h>
+#include <byteswap.h>
 
-void ptrace_get_syscall_number(pid_t pid, uint64_t *nr);
+#include <uuid/uuid.h>
 
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1);
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2);
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3);
+#include <string>
 
-void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n);
+bool iConv_UTF16ToUTF8(uint16_t const *pInBuf, size_t *pInCharsLeft, char *pOutBuf, size_t *pOutCharsLeft);
 
 int main(int argc, char **argv)
 {
-    pid_t pid;
-    if ((pid = ::fork()) == 0)
+
+    char tmpbashPath[256];
     {
-        // http://man7.org/linux/man-pages/man2/ptrace.2.html
-        // If the PTRACE_O_TRACEEXEC option is not in effect, all successful
-        // calls to execve(2) by the traced process will cause it to be sent a
-        // SIGTRAP signal, giving the parent a chance to gain control before the
-        // new program begins execution. 
-        ::ptrace(PTRACE_TRACEME, 0L, 0L, 0L);
+        char *pathToTool = NULL;
 
-        ::kill(::getpid(), SIGTRAP);
+        if (argc > 3)
+        {
+            if (::strcmp(argv[argc - 3], "/c") == 0)
+            {
+                pathToTool = argv[argc - 2];
+            }
+        }
 
-        ::open("XXXX", O_RDWR);
+        if (pathToTool == NULL)
+        {
+            ::printf("/c [command-line]   :Command to be tracked (must be last argument).\n");
+            return -1;
+        }
 
-        return ::execlp("ld", "ld", "/home/YuqiaoZhang/main.o", "-o", "/home/YuqiaoZhang/a.out", NULL);
+        char *responseFileSwitch = NULL;
+        if (argc > 2)
+        {
+            if (argv[argc - 1][0] == '@')
+            {
+                responseFileSwitch = argv[argc - 1] + 1;
+            }
+        }
+
+        if (responseFileSwitch == NULL)
+        {
+            ::printf("missing responsible file\n");
+            return -1;
+        }
+
+        char responseFileCommands[4096];
+        {
+            uint16_t responseFileCommands_Buffer[4096];
+            int responseFile = ::open64(responseFileSwitch, O_RDONLY);
+            ssize_t nbytesread = ::read(responseFile, responseFileCommands_Buffer, sizeof(uint16_t) * 4096);
+            assert(nbytesread < (sizeof(uint16_t) * 4096));
+            ::close(responseFile);
+
+            //Handle BOM
+            uint16_t *responseFileCommands_UTF16;
+            if (responseFileCommands_Buffer[0] == 0XFEFF)
+            {
+                responseFileCommands_UTF16 = responseFileCommands_Buffer + 1;
+            }
+            else if (responseFileCommands_Buffer[0] == 0XFFFE)
+            {
+                for (int _c = 1; _c < (nbytesread / sizeof(uint16_t)); ++_c)
+                {
+                    responseFileCommands_Buffer[_c] = (bswap_16(responseFileCommands_Buffer[_c]));
+                }
+                responseFileCommands_UTF16 = responseFileCommands_Buffer + 1;
+            }
+            else
+            {
+                responseFileCommands_UTF16 = responseFileCommands_Buffer;
+            }
+
+            size_t InCharsLeft = (nbytesread / sizeof(uint16_t));
+            size_t OutCharsLeft = 4096;
+            bool iConv_Success = iConv_UTF16ToUTF8(responseFileCommands_UTF16, &InCharsLeft, responseFileCommands, &OutCharsLeft);
+            if (!iConv_Success)
+            {
+                ::printf("Fail to convert responseFileCommands from UTF16 to UTF8:\n%s\n", responseFileCommands);
+                return -1;
+            }
+        }
+
+        //char tmpbashPath[256];
+        {
+            tmpbashPath[0] = '/';
+            tmpbashPath[1] = 't';
+            tmpbashPath[2] = 'm';
+            tmpbashPath[3] = 'p';
+            tmpbashPath[4] = '/';
+            tmpbashPath[5] = 't';
+            tmpbashPath[6] = 'm';
+            tmpbashPath[7] = 'p';
+
+            char *_str_uu = tmpbashPath + 8;
+            {
+                uuid_t _out_uu;
+                ::uuid_generate_time_safe(_out_uu);
+
+                int _c_str = 0;
+                for (int _c_uu = 0; _c_uu < 16; ++_c_uu)
+                {
+                    uint8_t val2 = _out_uu[_c_uu];
+                    uint8_t val2_1 = (val2 >> 4);
+                    uint8_t val2_2 = (val2 & (0XF));
+
+                    uint8_t val_vec[2] = {val2_1, val2_2};
+
+                    for (int _i_val_vec = 0; _i_val_vec < 2; ++_i_val_vec)
+                    {
+                        switch (val_vec[_i_val_vec])
+                        {
+                        case 0:
+                        {
+                            _str_uu[_c_str] = '0';
+                        }
+                        break;
+                        case 1:
+                        {
+                            _str_uu[_c_str] = '1';
+                        }
+                        break;
+                        case 2:
+                        {
+                            _str_uu[_c_str] = '2';
+                        }
+                        break;
+                        case 3:
+                        {
+                            _str_uu[_c_str] = '3';
+                        }
+                        break;
+                        case 4:
+                        {
+                            _str_uu[_c_str] = '4';
+                        }
+                        break;
+                        case 5:
+                        {
+                            _str_uu[_c_str] = '5';
+                        }
+                        break;
+                        case 6:
+                        {
+                            _str_uu[_c_str] = '6';
+                        }
+                        break;
+                        case 7:
+                        {
+                            _str_uu[_c_str] = '7';
+                        }
+                        break;
+                        case 8:
+                        {
+                            _str_uu[_c_str] = '8';
+                        }
+                        break;
+                        case 9:
+                        {
+                            _str_uu[_c_str] = '9';
+                        }
+                        break;
+                        case 10:
+                        {
+                            _str_uu[_c_str] = 'a';
+                        }
+                        break;
+                        case 11:
+                        {
+                            _str_uu[_c_str] = 'b';
+                        }
+                        break;
+                        case 12:
+                        {
+                            _str_uu[_c_str] = 'c';
+                        }
+                        break;
+                        case 13:
+                        {
+                            _str_uu[_c_str] = 'd';
+                        }
+                        break;
+                        case 14:
+                        {
+                            _str_uu[_c_str] = 'e';
+                        }
+                        break;
+                        case 15:
+                        {
+                            _str_uu[_c_str] = 'f';
+                        }
+                        break;
+                        default:
+                        {
+                            _str_uu[_c_str] = '#';
+                        }
+                        }
+                        ++_c_str;
+                    }
+                }
+            }
+            tmpbashPath[7 + 32 + 1] = '.';
+            tmpbashPath[7 + 32 + 2] = 's';
+            tmpbashPath[7 + 32 + 3] = 'h';
+            tmpbashPath[7 + 32 + 4] = '\0';
+        }
+
+        int bashFile;
+        {
+            bashFile = ::open64(tmpbashPath, O_WRONLY | O_CREAT | O_EXCL, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+            if (bashFile == -1)
+            {
+                ::printf("Fail to create temp file:\n%s\n", tmpbashPath);
+                return -1;
+            }
+
+            std::string bashFileContent = "#! /bin/sh\n";
+            bashFileContent += pathToTool;
+            bashFileContent += ' ';
+            bashFileContent += responseFileCommands;
+            bashFileContent += '\n';
+
+            ::write(bashFile, bashFileContent.c_str(), sizeof(char) * bashFileContent.length());
+
+            ::close(bashFile);
+        }
+    }
+
+    //We just execute now!
+
+    //To DO:
+    //File Tracker
+
+    pid_t _pid_child;
+
+    if ((_pid_child = ::fork()) == 0)
+    {
+        char _bash_arg1[] = {"bash"};
+        char _bash_arg2[] = {"-c"};
+        char *_bash_argv[] = {_bash_arg1, _bash_arg2, tmpbashPath, NULL};
+        return ::execvp(_bash_arg1, _bash_argv);
     }
     else
     {
         int status;
-        ::waitpid(pid, &status, 0);
-        assert(WIFSTOPPED(status)); //Stop by SIGTRAP caused by execve(2)
+        ::waitpid(_pid_child, &status, 0);
 
-        //ptrace only works when tracee is stopped?
-        int i = ::ptrace(PTRACE_SETOPTIONS, pid, 0L, PTRACE_O_TRACESYSGOOD);
-
-        for (int _7 = 0; _7 < 150; ++_7)
+        int _retval;
+        if (WIFEXITED(status))
         {
-            // http://man7.org/linux/man-pages/man2/ptrace.2.html
-            // Restart the stopped tracee as for PTRACE_CONT.
-            i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L); //continue
-            auto str2 = strerror(errno);
-
-            //Syscall Entry
-            //int status;
-            auto p2 = ::waitpid(pid, &status, 0); //Sync
-            bool isstopped = (WIFSTOPPED(status));
-            auto stopsig = (WSTOPSIG(status));
-
-            if ((WIFSTOPPED(status)) && ((WSTOPSIG(status)) == (SIGTRAP | 0X80)))
-            {
-                uint64_t systemcallnumber_entry;
-                ::ptrace_get_syscall_number(pid, &systemcallnumber_entry);
-
-                switch (systemcallnumber_entry)
-                {
-                case SYS_open:
-                {
-                    uint64_t arg1;
-                    uint64_t arg2_flags;
-                    ::ptrace_get_syscall_args(pid, &arg1, &arg2_flags);
-
-                    char pathname[4096];
-                    ::ptrace_read_pid_string(pid, arg1, pathname, 4096);
-
-                    char accmode[16];
-                    switch (arg2_flags & O_ACCMODE)
-                    {
-                    case O_RDONLY:
-                        ::strncpy(accmode, "O_RDONLY", 16);
-                        break;
-                    case O_WRONLY:
-                        ::strncpy(accmode, "O_WRONLY", 16);
-                        break;
-                    case O_RDWR:
-                        ::strncpy(accmode, "O_RDWR", 16);
-                        break;
-                    default:
-                        break;
-                    }
-
-                    printf("track - %s - %s \n", pathname, accmode);
-                }
-                break;
-                case SYS_openat:
-                {
-                    uint64_t arg1_dirfd;
-                    uint64_t arg2_pathname;
-                    uint64_t arg3_flags;
-                    ::ptrace_get_syscall_args(pid, &arg1_dirfd, &arg2_pathname, &arg3_flags);
-
-                    char pathname[4096];
-                    ::ptrace_read_pid_string(pid, arg2_pathname, pathname, 4096);
-
-                    char accmode[16];
-                    switch (arg3_flags & O_ACCMODE)
-                    {
-                    case O_RDONLY:
-                        ::strncpy(accmode, "O_RDONLY", 16);
-                        break;
-                    case O_WRONLY:
-                        ::strncpy(accmode, "O_WRONLY", 16);
-                        break;
-                    case O_RDWR:
-                        ::strncpy(accmode, "O_RDWR", 16);
-                        break;
-                    default:
-                        break;
-                    }
-
-                    printf("track - %s - %s \n", pathname, accmode);
-                }
-                break;
-                case SYS_open_by_handle_at:
-                {
-                    int huhu = 0;
-                }
-                break;
-                case SYS_fork:
-                case SYS_vfork:
-                {
-                    printf("track - fork \n");
-                }
-                break;
-                case SYS_execve:
-                {
-                    printf("track - execve \n");
-                }
-                break;
-                case SYS_pipe:
-                case SYS_pipe2:
-                {
-                    printf("track - pipe \n");
-                }
-                break;
-                default:
-                    break;
-                }
-
-                // Restart the stopped tracee as for PTRACE_CONT.
-                //i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
-
-                //Syscall Exit //Some Syscall(such as exec) not return?
-                //p2 = ::waitpid(pid, &status, 0);
-                //bool isstopped = (WIFSTOPPED(status));
-                //bool isexited = (WIFEXITED(status));
-
-                //if ((WIFEXITED(status)))
-                //{
-                //    break;
-                //}
-
-                //uint64_t systemcallnumber_exit;
-                //::ptrace_get_syscall_number(pid, &systemcallnumber_exit);
-
-                //assert(systemcallnumber_entry == systemcallnumber_exit);
-            }
-            else if ((WIFEXITED(status)) || ((WIFSIGNALED(status))))
-            {
-                break;
-            }
+            _retval = (WEXITSTATUS(status));
+        }
+        else
+        {
+            _retval = -1;
         }
 
-        return 0;
+        ::unlink(tmpbashPath);
+
+        return _retval;
     }
 }
 
-// http://man7.org/linux/man-pages/man2/syscall.2.html
-
-void ptrace_get_syscall_number(pid_t pid, uint64_t *nr)
+bool iConv_UTF16ToUTF8(uint16_t const *pInBuf, size_t *pInCharsLeft, char *pOutBuf, size_t *pOutCharsLeft)
 {
-
-#ifdef __x86_64__
-    (*nr) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L); //ORIG_RAX:System call # //RAX: Ret val
-#elif defined(__i386__)
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
-}
-
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1)
-{
-
-#ifdef __x86_64__
-    (*arg1) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDI, 0L);
-#elif defined(__i386__)
-
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
-}
-
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2)
-{
-
-#ifdef __x86_64__
-    (*arg2) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RSI, 0L);
-#elif defined(__i386__)
-
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
-
-    ptrace_get_syscall_args(pid, arg1);
-}
-
-void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3)
-{
-
-#ifdef __x86_64__
-    (*arg3) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDX, 0L);
-#elif defined(__i386__)
-
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
-
-    ptrace_get_syscall_args(pid, arg1, arg2);
-}
-
-void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n)
-{
-    for (int _w = 0; _w < ((n > 0) ? ((n - 1) / (__WORDSIZE / CHAR_BIT)) : 0); ++_w)
+    while ((*pInCharsLeft) >= 1)
     {
-        auto val4 = ::ptrace(PTRACE_PEEKTEXT, pid, src + (__WORDSIZE / CHAR_BIT) * _w, 0L);
+        uint32_t ucs4code = 0; //Accumulator
 
-        bool meetzeroterm = false;
-        for (int _c = 0; _c < (__WORDSIZE / CHAR_BIT); ++_c)
+        //UTF-16 To UCS-4
+        if ((*pInBuf) >= 0XD800U && (*pInBuf) <= 0XDBFFU) //110110xxxxxxxxxx
         {
-            char val = reinterpret_cast<char *>(&val4)[_c];
-            dest[(__WORDSIZE / CHAR_BIT) * _w + _c] = val;
-            if (val == '\0')
+            if ((*pInCharsLeft) >= 2)
             {
-                meetzeroterm = true;
-                break;
+                ucs4code += (((*pInBuf) - 0XD800U) << 10U); //Accumulate
+
+                ++pInBuf;
+                --(*pInCharsLeft);
+
+                if ((*pInBuf) >= 0XDC00U && (*pInBuf) <= 0XDFFF) //110111xxxxxxxxxx
+                {
+                    ucs4code += ((*pInBuf) - 0XDC00U); //Accumulate
+
+                    ++pInBuf;
+                    --(*pInCharsLeft);
+                }
+                else
+                {
+                    return false;
+                }
+
+                ucs4code += 0X10000U;
+            }
+            else
+            {
+                return false;
             }
         }
-
-        if (meetzeroterm)
+        else
         {
-            break;
+            ucs4code += (*pInBuf); //Accumulate
+
+            ++pInBuf;
+            --(*pInCharsLeft);
+        }
+
+        //UCS-4 To UTF-16
+        if (ucs4code < 128U) //0XXX XXXX
+        {
+            if ((*pOutCharsLeft) >= 1)
+            {
+                (*pOutBuf) = static_cast<uint8_t>(ucs4code);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (ucs4code < 2048U) //110X XXXX 10XX XXXX
+        {
+            if ((*pOutCharsLeft) >= 2)
+            {
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0X7C0U) >> 6U) + 192U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>((ucs4code & 0X3FU) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (ucs4code < 0X10000U) //1110 XXXX 10XX XXXX 10XX XXXX
+        {
+            if ((*pOutCharsLeft) >= 3)
+            {
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0XF000U) >> 12U) + 224U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0XFC0U) >> 6U) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>((ucs4code & 0X3FU) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (ucs4code < 0X200000U) //1111 0XXX 10XX XXXX 10XX XXXX 10XX XXXX
+        {
+            if ((*pOutCharsLeft) >= 4)
+            {
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0X1C0000U) >> 18U) + 240U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0X3F000U) >> 12U) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>(((ucs4code & 0XFC0U) >> 6U) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+
+                (*pOutBuf) = static_cast<uint8_t>((ucs4code & 0X3FU) + 128U);
+
+                ++pOutBuf;
+                --(*pOutCharsLeft);
+            }
+            else //ucs4code >= 0X200000U
+            {
+                return false;
+            }
         }
     }
+
+    return true;
 }

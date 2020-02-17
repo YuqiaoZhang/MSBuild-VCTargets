@@ -48,7 +48,7 @@
         </ccTool>
         <linkerTool>
           <linkerKpic>false</linkerKpic>
-          <commandLine>-fdiagnostics-format=msvc -fuse-ld=lld -stdlib=libc++ -lc++ -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -pthread -finput-charset=UTF-8 -fexec-charset=UTF-8 -Wl,-Bsymbolic -Wl,-rpath,'$$ORIGIN'</commandLine>
+          <commandLine>-fdiagnostics-format=msvc -fuse-ld=lld -stdlib=libc++ -lc++ -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -pthread -finput-charset=UTF-8 -fexec-charset=UTF-8 -Wl,-Bsymbolic -Wl,-rpath,'$$ORIGIN' -luuid</commandLine>
         </linkerTool>
       </compileType>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
@@ -87,7 +87,7 @@
         </asmTool>
         <linkerTool>
           <linkerKpic>false</linkerKpic>
-          <commandLine>-fdiagnostics-format=msvc -fuse-ld=lld -stdlib=libc++ -lc++ -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -pthread -finput-charset=UTF-8 -fexec-charset=UTF-8 -Wl,-Bsymbolic -Wl,-rpath,'$$ORIGIN'</commandLine>
+          <commandLine>-fdiagnostics-format=msvc -fuse-ld=lld -stdlib=libc++ -lc++ -Wl,--no-undefined -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -pthread -finput-charset=UTF-8 -fexec-charset=UTF-8 -Wl,-Bsymbolic -Wl,-rpath,'$$ORIGIN' -luuid</commandLine>
         </linkerTool>
       </compileType>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">

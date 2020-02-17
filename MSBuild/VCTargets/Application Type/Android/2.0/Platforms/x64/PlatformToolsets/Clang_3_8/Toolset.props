@@ -18,7 +18,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <PropertyGroup>
     <ClangTarget>x86_64-none-linux-android</ClangTarget>
     <MSVCErrorReport>true</MSVCErrorReport>
-    <ClangToolExe>clang.exe</ClangToolExe>
+    <ClangToolExe>clang</ClangToolExe>
   </PropertyGroup>
 
   <PropertyGroup>

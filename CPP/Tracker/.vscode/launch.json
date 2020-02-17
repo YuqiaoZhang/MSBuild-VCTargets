@@ -9,7 +9,13 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/dist/Debug/CLang-Linux/tracker",
-            //"args": [],                                //No effect when using gdbserver
+            "args": [
+                "@/home/YuqiaoZhang/tmpc11eb12d72804ac1a499bf5cc1bfe374.tmp",
+                "/f",
+                "/c",
+                "clang",
+                "@/home/YuqiaoZhang/tmpe7675b11f9124578944c7ceca0bd8bb6.rsp"
+            ], //No effect when using gdbserver
             "cwd": "${workspaceFolder}/dist/Debug/CLang-Linux/",
             //"environment": [],                         //No effect when using gdbserver
             "externalConsole": false, //No effect when using gdbserver
