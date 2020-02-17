@@ -9,6 +9,7 @@
     "files.associations": {
         "iostream": "cpp",
         "stack": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "random": "cpp"
     }
 }

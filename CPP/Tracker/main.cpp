@@ -14,6 +14,15 @@
 #include <string.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stddef.h>
+#include <stdint.h>
+
+void ptrace_get_syscall_number(pid_t pid, uint64_t *nr);
+
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1);
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2);
+
+void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n);
 
 int main(int argc, char **argv)
 {
@@ -33,7 +42,7 @@ int main(int argc, char **argv)
     {
         int status;
         ::waitpid(pid, &status, 0);
-        assert(WIFSTOPPED(status));
+        assert(WIFSTOPPED(status)); //Stop by SIGTRAP caused by execve(2)
 
         //ptrace only works when tracee is stopped?
         int i = ::ptrace(PTRACE_SETOPTIONS, pid, 0L, PTRACE_O_TRACESYSGOOD);
@@ -42,73 +51,45 @@ int main(int argc, char **argv)
         {
             // http://man7.org/linux/man-pages/man2/ptrace.2.html
             // Restart the stopped tracee as for PTRACE_CONT.
-            i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
+            i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L); //continue
             auto str2 = strerror(errno);
 
             //Syscall Entry
             //int status;
-            auto p2 = ::waitpid(pid, &status, 0);
+            auto p2 = ::waitpid(pid, &status, 0); //Sync
             bool isstopped = (WIFSTOPPED(status));
             auto stopsig = (WSTOPSIG(status));
 
             if ((WIFSTOPPED(status)) && ((WSTOPSIG(status)) == (SIGTRAP | 0X80)))
             {
-#ifdef __x86_64__
-                // http://man7.org/linux/man-pages/man2/syscall.2.html
-                // System call #
-                // rax
-                auto systemcallnumber_entry = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L);
-#elif defined(__i386__)
-                //Compiler May Define Both __x86_64__ and __i386__ Because Of Bugs.
+                uint64_t systemcallnumber_entry;
+                ::ptrace_get_syscall_number(pid, &systemcallnumber_entry);
 
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
                 switch (systemcallnumber_entry)
                 {
                 case SYS_open:
                 {
-#ifdef __x86_64__
-                    // http://man7.org/linux/man-pages/man2/syscall.2.html
-                    // arg1
-                    // rdi
-                    auto arg1 = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDI, 0L);
-#elif defined(__i386__)
+                    uint64_t arg1;
+                    ::ptrace_get_syscall_args(pid, &arg1);
 
-#elif defined(__arm__)
-#elif defined(__aarch64__)
-#else
-#error Unknown Architecture 未知的架构
-#endif
                     char pathname[4096];
-                    for (int _w = 0; _w < (4096 / (__WORDSIZE / CHAR_BIT)); ++_w)
-                    {
-                        auto val4 = ::ptrace(PTRACE_PEEKTEXT, pid, arg1 + (__WORDSIZE / CHAR_BIT) * _w, 0L);
+                    ::ptrace_read_pid_string(pid, arg1, pathname, 4096);
 
-                        bool meetzeroterm = false;
-                        for (int _c = 0; _c < (__WORDSIZE / CHAR_BIT); ++_c)
-                        {
-                            char val = reinterpret_cast<char *>(&val4)[_c];
-                            pathname[(__WORDSIZE / CHAR_BIT) * _w + _c] = val;
-                            if (val == '\0')
-                            {
-                                meetzeroterm = true;
-                                break;
-                            }
-                        }
-
-                        if (meetzeroterm)
-                        {
-                            break;
-                        }
-                    }
                     printf("track - %s\n", pathname);
                 }
                 break;
                 case SYS_openat:
-                    break;
+                {
+                    uint64_t arg1_dirfd;
+                    uint64_t arg2_pathname;
+                    ::ptrace_get_syscall_args(pid, &arg1_dirfd, &arg2_pathname);
+
+                    char pathname[4096];
+                    ::ptrace_read_pid_string(pid, arg2_pathname, pathname, 4096);
+
+                    printf("track - %s\n", pathname);
+                }
+                break;
                 default:
                     break;
                 }
@@ -126,29 +107,83 @@ int main(int argc, char **argv)
                     break;
                 }
 
+                uint64_t systemcallnumber_exit;
+                ::ptrace_get_syscall_number(pid, &systemcallnumber_exit);
+
+                assert(systemcallnumber_entry == systemcallnumber_exit);
+            }
+            else if ((WIFEXITED(status)) || ((WIFSIGNALED(status))))
+            {
+                break;
+            }
+        }
+
+        return 0;
+    }
+}
+
+// http://man7.org/linux/man-pages/man2/syscall.2.html
+
+void ptrace_get_syscall_number(pid_t pid, uint64_t *nr)
+{
 #ifdef __x86_64__
-                auto systemcallnumber_exit = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L);
+    (*nr) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L); //ORIG_RAX:System call # //RAX: Ret val
 #elif defined(__i386__)
 #elif defined(__arm__)
 #elif defined(__aarch64__)
 #else
 #error Unknown Architecture 未知的架构
 #endif
-                assert(systemcallnumber_entry == systemcallnumber_exit);
-            }
-            else if ((WIFEXITED(status)))
+}
+
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1)
+{
+#ifdef __x86_64__
+    (*arg1) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDI, 0L);
+#elif defined(__i386__)
+
+#elif defined(__arm__)
+#elif defined(__aarch64__)
+#else
+#error Unknown Architecture 未知的架构
+#endif
+}
+
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2)
+{
+#ifdef __x86_64__
+    (*arg2) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RSI, 0L);
+#elif defined(__i386__)
+
+#elif defined(__arm__)
+#elif defined(__aarch64__)
+#else
+#error Unknown Architecture 未知的架构
+#endif
+    ptrace_get_syscall_number(pid, arg1);
+}
+
+void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n)
+{
+    for (int _w = 0; _w < ((n > 0) ? ((n - 1) / (__WORDSIZE / CHAR_BIT)) : 0); ++_w)
+    {
+        auto val4 = ::ptrace(PTRACE_PEEKTEXT, pid, src + (__WORDSIZE / CHAR_BIT) * _w, 0L);
+
+        bool meetzeroterm = false;
+        for (int _c = 0; _c < (__WORDSIZE / CHAR_BIT); ++_c)
+        {
+            char val = reinterpret_cast<char *>(&val4)[_c];
+            dest[(__WORDSIZE / CHAR_BIT) * _w + _c] = val;
+            if (val == '\0')
             {
+                meetzeroterm = true;
                 break;
-            }
-            else
-            {
-                i = ::ptrace(PTRACE_SYSCALL, pid, 0L, 0L);
-                p2 = ::waitpid(pid, &status, 0);
-                bool isstopped = (WIFSTOPPED(status));
-                bool isexited = (WIFEXITED(status));
             }
         }
 
-        return 0;
+        if (meetzeroterm)
+        {
+            break;
+        }
     }
 }
