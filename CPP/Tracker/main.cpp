@@ -16,11 +16,13 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <fcntl.h>
 
 void ptrace_get_syscall_number(pid_t pid, uint64_t *nr);
 
 void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1);
 void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2);
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3);
 
 void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n);
 
@@ -35,6 +37,10 @@ int main(int argc, char **argv)
         // SIGTRAP signal, giving the parent a chance to gain control before the
         // new program begins execution.
         ::ptrace(PTRACE_TRACEME, 0L, 0L, 0L);
+
+        //::kill(::getpid(), SIGTRAP);
+
+        //::open("XXXX", O_RDWR);
 
         return ::execlp("cat", "cat", "/usr/include/stdio.h", NULL);
     }
@@ -70,24 +76,58 @@ int main(int argc, char **argv)
                 case SYS_open:
                 {
                     uint64_t arg1;
-                    ::ptrace_get_syscall_args(pid, &arg1);
+                    uint64_t arg2_flags;
+                    ::ptrace_get_syscall_args(pid, &arg1, &arg2_flags);
 
                     char pathname[4096];
                     ::ptrace_read_pid_string(pid, arg1, pathname, 4096);
 
-                    printf("track - %s\n", pathname);
+                    char accmode[16];
+                    switch (arg2_flags & O_ACCMODE)
+                    {
+                    case O_RDONLY:
+                        ::strncpy(accmode, "O_RDONLY", 16);
+                        break;
+                    case O_WRONLY:
+                        ::strncpy(accmode, "O_WRONLY", 16);
+                        break;
+                    case O_RDWR:
+                        ::strncpy(accmode, "O_RDWR", 16);
+                        break;
+                    default:
+                        break;
+                    }
+
+                    printf("track - %s - %s \n", pathname, accmode);
                 }
                 break;
                 case SYS_openat:
                 {
                     uint64_t arg1_dirfd;
                     uint64_t arg2_pathname;
-                    ::ptrace_get_syscall_args(pid, &arg1_dirfd, &arg2_pathname);
+                    uint64_t arg3_flags;
+                    ::ptrace_get_syscall_args(pid, &arg1_dirfd, &arg2_pathname, &arg3_flags);
 
                     char pathname[4096];
                     ::ptrace_read_pid_string(pid, arg2_pathname, pathname, 4096);
 
-                    printf("track - %s\n", pathname);
+                    char accmode[16];
+                    switch (arg3_flags & O_ACCMODE)
+                    {
+                    case O_RDONLY:
+                        ::strncpy(accmode, "O_RDONLY", 16);
+                        break;
+                    case O_WRONLY:
+                        ::strncpy(accmode, "O_WRONLY", 16);
+                        break;
+                    case O_RDWR:
+                        ::strncpy(accmode, "O_RDWR", 16);
+                        break;
+                    default:
+                        break;
+                    }
+
+                    printf("track - %s - %s \n", pathname, accmode);
                 }
                 break;
                 default:
@@ -117,7 +157,7 @@ int main(int argc, char **argv)
                 break;
             }
         }
-
+        
         return 0;
     }
 }
@@ -126,6 +166,7 @@ int main(int argc, char **argv)
 
 void ptrace_get_syscall_number(pid_t pid, uint64_t *nr)
 {
+
 #ifdef __x86_64__
     (*nr) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * ORIG_RAX, 0L); //ORIG_RAX:System call # //RAX: Ret val
 #elif defined(__i386__)
@@ -138,6 +179,7 @@ void ptrace_get_syscall_number(pid_t pid, uint64_t *nr)
 
 void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1)
 {
+
 #ifdef __x86_64__
     (*arg1) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDI, 0L);
 #elif defined(__i386__)
@@ -151,6 +193,7 @@ void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1)
 
 void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2)
 {
+
 #ifdef __x86_64__
     (*arg2) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RSI, 0L);
 #elif defined(__i386__)
@@ -160,7 +203,24 @@ void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2)
 #else
 #error Unknown Architecture 未知的架构
 #endif
-    ptrace_get_syscall_number(pid, arg1);
+
+    ptrace_get_syscall_args(pid, arg1);
+}
+
+void ptrace_get_syscall_args(pid_t pid, uint64_t *arg1, uint64_t *arg2, uint64_t *arg3)
+{
+
+#ifdef __x86_64__
+    (*arg3) = ::ptrace(PTRACE_PEEKUSER, pid, (__WORDSIZE / 8) * RDX, 0L);
+#elif defined(__i386__)
+
+#elif defined(__arm__)
+#elif defined(__aarch64__)
+#else
+#error Unknown Architecture 未知的架构
+#endif
+
+    ptrace_get_syscall_args(pid, arg1, arg2);
 }
 
 void ptrace_read_pid_string(pid_t pid, uint64_t src, char *dest, size_t n)
