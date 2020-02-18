@@ -57,6 +57,13 @@ int main(int argc, char **argv)
         {
             uint16_t responseFileCommands_Buffer[4096];
             int responseFile = ::open64(responseFileSwitch, O_RDONLY);
+
+            if (responseFile == -1)
+            {
+                ::printf("Fail to open responseFile:\n%s\n", responseFileSwitch);
+                return -1;
+            }
+
             ssize_t nbytesread = ::read(responseFile, responseFileCommands_Buffer, sizeof(uint16_t) * 4096);
             assert(nbytesread < (sizeof(uint16_t) * 4096));
             ::close(responseFile);
